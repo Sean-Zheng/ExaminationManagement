@@ -16,16 +16,25 @@ namespace ExaminationManagement.Controllers
         /// <summary>
         /// 上传学生成绩
         /// </summary>
+        /// <param name="file"></param>
         /// <returns></returns>
+        [HttpPost]
         public ActionResult UploadAchievement(HttpPostedFileBase file)
         {
-            
+            string fileName = HttpContext.Server.MapPath("~/Resources/Temp")
+                + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") + file.FileName;
+            file.SaveAs(fileName);
+
+            if (System.IO.File.Exists(fileName))
+                return Json(null);
             return null;
         }
         /// <summary>
         /// 上传学生信息
         /// </summary>
+        /// <param name="file"></param>
         /// <returns></returns>
+        [HttpPost]
         public ActionResult UploadInformation(HttpPostedFileBase file)
         {
             return null;
