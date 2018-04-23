@@ -18,10 +18,5 @@ namespace ExaminationManagement.Controllers
         {
             return null;
         }
-        //public string Test()
-        //{
-        //    //HttpContext.Current.Server.MapPath("~/Resources/Templates/学生成绩模板.xlsx");
-        //    return MimeMapping.GetMimeMapping(PathInfo.File_Achievement);
-        //}
     }
 }

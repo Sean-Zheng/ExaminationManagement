@@ -15,10 +15,10 @@ namespace ExaminationManagement.Models
         private IWorkbook _workbook;
         private bool _existTitle;
 
-        public int SheetCount
-        {
-            get => this._workbook.NumberOfSheets;
-        }
+        //public int SheetCount
+        //{
+        //    get => this._workbook.NumberOfSheets;
+        //}
 
         public ExcalManager(string path, bool existTitle)
         {

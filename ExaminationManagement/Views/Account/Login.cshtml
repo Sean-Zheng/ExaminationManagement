@@ -1,0 +1,75 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+        }
+        html {
+            height: 100%;
+        }
+        body {
+            background-image: url("bg.jpg");
+            background-size: cover;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        input {
+            border: 0;
+            outline: 0;
+            padding: 10px 12px;
+            height: 23px;
+        }
+        button {
+            background-color: rgba(0,0,0,0);
+            border: 0;
+            outline: 0;
+            width: 45px;
+            height: 45px;
+            padding: 0;
+            float: right;
+            font-size: 35px;
+            color: rgba(146,146,146,1);
+            cursor: pointer;
+        }
+        #login_div {
+            background-color: rgba(255,255,255,1);
+            width: 330px;
+            height: 90px;
+            overflow: hidden;
+            border-radius: 7px;
+        }
+        #login_div div {
+            width: 330px;
+            height: 45px;
+
+        }
+        #login_div div:last-child {
+            border-top: 1px solid rgba(146,146,146,1);
+
+        }
+    </style>
+</head>
+<body>
+    <div id="login_div">
+        <div>
+            <input id="uername_input" type="text" name="username" maxlength="10" size="39" placeholder="用户名" />
+        </div>
+        <div>
+            <input id="password_input" type="password" name="password" maxlength="10" size="33" placeholder="密码" />
+            <button id="login_btn"><span class="fa fa-arrow-circle-o-right"></span></button>
+        </div>
+    </div>
+</body>
+</html>
