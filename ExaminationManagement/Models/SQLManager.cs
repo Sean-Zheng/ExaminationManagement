@@ -13,6 +13,9 @@ namespace ExaminationManagement.Models
         private SqlConnection _connection;
         private DataSet _dataSet;
 
+        /// <summary>
+        /// 连接数据库
+        /// </summary>
         public SQLManager()
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ExamDb"].ConnectionString;
@@ -20,11 +23,32 @@ namespace ExaminationManagement.Models
             this._dataSet = new DataSet("ExamDb");
         }
 
-        public SQLManager(string dataSetName)
+        public RoleType CheckUser(string username,string password)
         {
-            string connectionString = ConfigurationManager.ConnectionStrings[dataSetName].ConnectionString;
-            this._connection = new SqlConnection(connectionString);
-            this._dataSet = new DataSet(dataSetName);
+            using(SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "select role_id from tb_users where id=@username and passwd=@password";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                SqlParameter[] parameters = { new SqlParameter("@username", username), new SqlParameter("@password", password) };
+                command.Parameters.AddRange(parameters);
+                object reslut = command.ExecuteScalar();
+                _connection.Close();
+                if (reslut == null)
+                    return RoleType.NotFound;
+                switch (int.Parse(reslut.ToString()))
+                {
+                    case 0:
+                        return RoleType.Admin;
+                    case 1:
+                        return RoleType.Teacher;
+                    case 3:
+                        return RoleType.Student;
+                    default:
+                        return RoleType.NotFound;
+                }
+            }
+            
         }
 
         public string checkuser()

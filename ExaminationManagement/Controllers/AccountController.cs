@@ -18,5 +18,10 @@ namespace ExaminationManagement.Controllers
         {
             return null;
         }
+        public string Test(string username,string password)
+        {
+            SQLManager manager = new SQLManager();
+            return manager.CheckUser(username, password).ToString();
+        }
     }
 }
