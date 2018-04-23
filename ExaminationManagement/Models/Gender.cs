@@ -6,13 +6,17 @@ using System.Web;
 namespace ExaminationManagement.Models
 {
     /// <summary>
-    /// 教师信息
+    /// 性别
     /// </summary>
-    public class TeachInfo:Person
+    public enum Gender
     {
         /// <summary>
-        /// 教师工号
+        /// 男
         /// </summary>
-        public string Tea_id { get; set; }
+        Male,
+        /// <summary>
+        /// 女
+        /// </summary>
+        Female
     }
 }

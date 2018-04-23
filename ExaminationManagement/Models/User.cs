@@ -5,6 +5,9 @@ using System.Web;
 
 namespace ExaminationManagement.Models
 {
+    /// <summary>
+    /// 用户
+    /// </summary>
     public class User
     {
         /// <summary>
@@ -15,5 +18,9 @@ namespace ExaminationManagement.Models
         /// 密码
         /// </summary>
         public string Password { get; set; }
+        /// <summary>
+        /// 用户类型
+        /// </summary>
+        public RoleType Role { get; set; }
     }
 }

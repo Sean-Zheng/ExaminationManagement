@@ -10,6 +10,9 @@ using System.Web;
 
 namespace ExaminationManagement.Models
 {
+    /// <summary>
+    /// Excel操作
+    /// </summary>
     public class ExcalManager
     {
         private IWorkbook _workbook;
@@ -24,31 +27,37 @@ namespace ExaminationManagement.Models
             else if (extension == ".xls")//Excel2003
                 this._workbook = new HSSFWorkbook(File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite));
         }
-        //public ISheet GetSheet()
-        //{
-        //    return this.m_workbook.GetSheetAt(0);
-        //}
-        //public ISheet GetSheet(int index)
-        //{
-        //    return this.m_workbook.GetSheetAt(index);
-        //}
-        //public ISheet GetSheet(string name)
-        //{
-        //    return this.m_workbook.GetSheet(name);
-        //}
+        /// <summary>
+        /// 获取工作簿列表
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<string> GetSheets()
         {
             for (int i = 0; i < this._workbook.NumberOfSheets; i++)
                 yield return this._workbook.GetSheetName(i);
         }
+        //成绩
         public DataTable GetAchievement()
         {
             return null;
         }
-        public DataTable GetInformation()
-        {
-            return null;
-        }
+        
+        //public IEnumerable<StuInfo> GetStuInfo()
+        //{
+        //    ISheet sheet = _workbook.GetSheetAt(0);
+        //    if (sheet == null || sheet.LastRowNum == 0)
+        //        return null;
+        //    for (int i = 0; i < sheet.LastRowNum; i++)
+        //    {
+        //        IRow cells = sheet.GetRow(i);
+        //        for (int j = 0; j < cells.LastCellNum; j++)
+        //        {
+        //            ICell cell = cells.GetCell(j);
+        //        }
+        //    }
+        //}
+
+        #region
         //public DataTable GetTable(ISheet sheet)
         //{
         //    if (sheet == null || sheet.LastRowNum == 0)
@@ -95,5 +104,6 @@ namespace ExaminationManagement.Models
         //    }
         //    return table;
         //}
+        #endregion
     }
 }

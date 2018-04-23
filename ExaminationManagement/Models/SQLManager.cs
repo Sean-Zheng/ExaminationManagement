@@ -4,10 +4,15 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 
 namespace ExaminationManagement.Models
 {
+    /// <summary>
+    /// 数据库操作
+    /// </summary>
     public class SQLManager
     {
         private SqlConnection _connection;
@@ -22,11 +27,17 @@ namespace ExaminationManagement.Models
             this._connection = new SqlConnection(connectionString);
             this._dataSet = new DataSet("ExamDb");
         }
-
+        /// <summary>
+        /// 登录验证
+        /// </summary>
+        /// <param name="username">用户名</param>
+        /// <param name="password">密码</param>
+        /// <returns>验证成功返回用户类型，失败返回NotFound</returns>
         public RoleType CheckUser(string username,string password)
         {
             using(SqlCommand command = _connection.CreateCommand())
             {
+                password = Encryption(password);
                 command.CommandText = "select role_id from tb_users where id=@username and passwd=@password";
                 if (_connection.State == ConnectionState.Closed)
                     _connection.Open();
@@ -48,18 +59,21 @@ namespace ExaminationManagement.Models
                         return RoleType.NotFound;
                 }
             }
-            
         }
-
-        public string checkuser()
+        public void AddUser(string password)
         {
-            SqlCommand command = this._connection.CreateCommand();
-            command.CommandText = "select role_name from tb_roles";
-            if (this._connection.State == ConnectionState.Closed)
-                this._connection.Open();
-            string role = command.ExecuteScalar() as string;
-            this._connection.Close();
-            return role;
+
+        }
+        /// <summary>
+        /// 加密字符串
+        /// </summary>
+        /// <param name="text">明文</param>
+        /// <returns>密文</returns>
+        private string Encryption(string text)
+        {
+            MD5 md5 = new MD5CryptoServiceProvider();
+            byte[] encryptdata = md5.ComputeHash(Encoding.Default.GetBytes(text));
+            return Convert.ToBase64String(encryptdata);
         }
     }
 }

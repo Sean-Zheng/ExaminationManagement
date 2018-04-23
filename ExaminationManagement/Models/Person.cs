@@ -5,6 +5,9 @@ using System.Web;
 
 namespace ExaminationManagement.Models
 {
+    /// <summary>
+    /// 人员信息
+    /// </summary>
     public abstract class Person
     {
         /// <summary>

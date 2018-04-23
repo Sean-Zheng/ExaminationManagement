@@ -5,6 +5,9 @@ using System.Web;
 
 namespace ExaminationManagement.Models
 {
+    /// <summary>
+    /// 学生信息
+    /// </summary>
     public class StuInfo:Person
     {
         /// <summary>
