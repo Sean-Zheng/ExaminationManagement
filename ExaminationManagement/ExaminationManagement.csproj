@@ -115,11 +115,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\ExcalManager.cs" />
-    <Compile Include="Models\Person.cs" />
     <Compile Include="Models\SQLManager.cs" />
-    <Compile Include="Models\StuInfo.cs" />
-    <Compile Include="Models\TeachInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
