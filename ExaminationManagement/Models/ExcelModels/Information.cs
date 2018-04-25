@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace ExaminationManagement.Models
+namespace ExaminationManagement.Models.ExcelModels
 {
     /// <summary>
     /// Excel学生信息导入模板

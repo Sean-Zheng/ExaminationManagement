@@ -166,16 +166,16 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Achievement.cs" />
+    <Compile Include="Models\ExcelModels\Achievement.cs" />
     <Compile Include="Models\ExcalManager.cs" />
-    <Compile Include="Models\Gender.cs" />
-    <Compile Include="Models\Information.cs" />
-    <Compile Include="Models\Person.cs" />
-    <Compile Include="Models\RoleType.cs" />
+    <Compile Include="Models\ExcelModels\Gender.cs" />
+    <Compile Include="Models\ExcelModels\Information.cs" />
+    <Compile Include="Models\DataBaseModels\Person.cs" />
+    <Compile Include="Models\DataBaseModels\RoleType.cs" />
     <Compile Include="Models\SQLManager.cs" />
-    <Compile Include="Models\StuInfo.cs" />
-    <Compile Include="Models\TeachInfo.cs" />
-    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\DataBaseModels\StuInfo.cs" />
+    <Compile Include="Models\DataBaseModels\TeachInfo.cs" />
+    <Compile Include="Models\DataBaseModels\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
