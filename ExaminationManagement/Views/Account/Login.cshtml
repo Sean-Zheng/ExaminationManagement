@@ -10,55 +10,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>Login</title>
     <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
-    <style>
-        * {
-            margin: 0;
-        }
-        html {
-            height: 100%;
-        }
-        body {
-            background-image: url('../../Resources/Images/login_bg.jpg');
-            background-size: cover;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        input {
-            border: 0;
-            outline: 0;
-            padding: 10px 12px;
-            height: 23px;
-        }
-        button {
-            background-color: rgba(0,0,0,0);
-            border: 0;
-            outline: 0;
-            width: 45px;
-            height: 45px;
-            padding: 0;
-            float: right;
-            font-size: 35px;
-            color: rgba(146,146,146,1);
-            cursor: pointer;
-        }
-        #login_div {
-            background-color: rgba(255,255,255,1);
-            width: 330px;
-            height: 90px;
-            overflow: hidden;
-            border-radius: 7px;
-        }
-        #login_div div {
-            width: 330px;
-            height: 45px;
-        }
-        #login_div div:last-child {
-            border-top: 1px solid rgba(146,146,146,1);
-
-        }
-    </style>
+    <link href="~/Content/login/login.css" rel="stylesheet" />
 </head>
 <body>
     <div id="starry-sky-container" style="height:100%;width:100%;">
@@ -73,5 +25,9 @@
             </div>
         </div>
     </div>
+
+    <script src="~/Scripts/login/EasePack.min.js"></script>
+    <script src="~/Scripts/login/TweenLite.min.js"></script>
+    <script src="~/Scripts/login/StarrySky.js"></script>
 </body>
 </html>

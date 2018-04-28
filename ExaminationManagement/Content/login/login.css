@@ -1,0 +1,47 @@
+﻿* {
+    margin: 0;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    background-image: url('../../Resources/Images/login_bg.jpg');
+    background-size: cover;
+    overflow: hidden;
+}
+
+input {
+    border: 0;
+    outline: 0;
+    padding: 10px 12px;
+    height: 23px;
+    background-color: rgba(0,0,0,0);
+}
+
+button {
+    background-color: rgba(0,0,0,0);
+    border: 0;
+    outline: 0;
+    width: 45px;
+    height: 45px;
+    padding: 0;
+    float: right;
+    font-size: 35px;
+    color: rgba(255,255,255,0.8);
+    cursor: pointer;
+}
+
+#login_div {
+    background-color: rgba(255,255,255,0.6);
+    width: 330px;
+    height: 90px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    border-radius: 7px;
+}
