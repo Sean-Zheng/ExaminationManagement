@@ -114,7 +114,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
-    <Content Include="Content\login\login.css" />
+    <Content Include="Content\Account\login.css" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="Global.asax" />
     <Content Include="Resources\Images\login_bg.jpg" />
@@ -150,9 +150,9 @@
     <Content Include="Scripts\jquery-3.0.0.min.js" />
     <Content Include="Scripts\jquery-3.0.0.slim.js" />
     <Content Include="Scripts\jquery-3.0.0.slim.min.js" />
-    <Content Include="Scripts\login\EasePack.min.js" />
-    <Content Include="Scripts\login\StarrySky.js" />
-    <Content Include="Scripts\login\TweenLite.min.js" />
+    <Content Include="Scripts\Account\EasePack.min.js" />
+    <Content Include="Scripts\Account\StarrySky.js" />
+    <Content Include="Scripts\Account\TweenLite.min.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
     <Content Include="Scripts\popper.js" />
