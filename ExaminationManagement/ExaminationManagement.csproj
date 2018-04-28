@@ -116,6 +116,7 @@
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Resources\Images\login_bg.jpg" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -148,6 +149,9 @@
     <Content Include="Scripts\jquery-3.0.0.min.js" />
     <Content Include="Scripts\jquery-3.0.0.slim.js" />
     <Content Include="Scripts\jquery-3.0.0.slim.min.js" />
+    <Content Include="Scripts\login\EasePack.min.js" />
+    <Content Include="Scripts\login\StarrySky.js" />
+    <Content Include="Scripts\login\TweenLite.min.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
     <Content Include="Scripts\popper.js" />
@@ -205,7 +209,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Resources\Icons\" />
-    <Folder Include="Resources\Images\" />
     <Folder Include="Resources\Temp\" />
     <Folder Include="Views\Student\" />
     <Folder Include="Views\Teacher\" />
