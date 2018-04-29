@@ -11,23 +11,45 @@
     <title>Login</title>
     <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
     <link href="~/Content/Account/login.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.js"></script>
 </head>
 <body>
     <div id="starry-sky-container" style="height:100%;width:100%;">
         <canvas id="starry-sky-canvas" style="z-index:-1;"></canvas>
         <div id="login_div">
-            <div>
-                <input id="uername_input" type="text" name="username" maxlength="10" size="39" placeholder="用户名" />
-            </div>
-            <div>
-                <input id="password_input" type="password" name="password" maxlength="10" size="33" placeholder="密码" />
-                <button id="login_btn"><span class="fa fa-arrow-circle-o-right"></span></button>
-            </div>
+            <form>
+                <div>
+                    <input id="uername_input" type="text" name="username" maxlength="10" size="39" placeholder="用户名" />
+                </div>
+                <div>
+                    <input id="password_input" type="password" name="password" maxlength="10" size="33" placeholder="密码" autocomplete="on" />
+                    <button id="login_btn"><span class="fa fa-arrow-circle-o-right"></span></button>
+                    @*<span id="ss">sss</span>*@
+                </div>
+            </form>
         </div>
     </div>
 
-    <script src="~/Scripts/Account/EasePack.min.js"></script>
-    <script src="~/Scripts/Account/TweenLite.min.js"></script>
-    <script src="~/Scripts/Account/StarrySky.js"></script>
+    @Scripts.Render("~/Scripts/StarrySky")
+
+    @*<script>
+        var reference = document.querySelector('#login_btn');
+        var popper = document.querySelector('#ss');
+        var anotherPopper = new Popper(
+            reference,
+            popper,
+            {
+                placement: 'down',
+                onCreate: (data) => {
+                    console.log(1234)
+                },
+                onUpdate: (data) => {
+                    console.log(444)
+                },
+                modifiers: {
+                },
+            }
+        );
+    </script>*@
 </body>
 </html>
