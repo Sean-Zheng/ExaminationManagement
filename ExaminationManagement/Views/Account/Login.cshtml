@@ -10,8 +10,9 @@
     <meta name="viewport" content="width=device-width" />
     <title>Login</title>
     <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+
     <link href="~/Content/Account/login.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.js"></script>
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.js"></script>*@
 </head>
 <body>
     <div id="starry-sky-container" style="height:100%;width:100%;">
@@ -23,13 +24,13 @@
                 </div>
                 <div>
                     <input id="password_input" type="password" name="password" maxlength="10" size="33" placeholder="密码" autocomplete="on" />
-                    <button id="login_btn"><span class="fa fa-arrow-circle-o-right"></span></button>
-                    @*<span id="ss">sss</span>*@
+                    <button id="login_btn" type="button"><span class="fa fa-arrow-circle-o-right"></span></button>
+                    <div id="tooltip"></div>
                 </div>
             </form>
         </div>
     </div>
-
+    
     @Scripts.Render("~/Scripts/StarrySky")
 
     @*<script>

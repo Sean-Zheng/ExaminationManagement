@@ -29,7 +29,7 @@ button {
     padding: 0;
     float: right;
     font-size: 35px;
-    color: rgba(255,255,255,0.8);
+    color: rgba(0,0,0,0.4);
     cursor: pointer;
 }
 
@@ -44,4 +44,9 @@ button {
     right: 0;
     margin: auto;
     border-radius: 7px;
+}
+
+#tooltip {
+    background-color:rebeccapurple;
+    height:200px;
 }
