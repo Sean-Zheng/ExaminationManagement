@@ -1,0 +1,38 @@
+﻿html{
+    height:100%;
+}
+
+body {
+    background-image:url('../Resources/Images/bg.png');
+    height:100%;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.content {
+    width: 1200px;
+    height: 600px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-part {
+    width: 75%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.right-part {
+    margin-left: 3%;
+    width: 22%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-left: 15px;
+    background-color: rgba(59, 89, 152, 0.9);
+    border-radius: 10px;
+}

@@ -1,4 +1,5 @@
-﻿using NPOI.HSSF.UserModel;
+﻿using ExaminationManagement.Models.ExcelModels;
+using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
@@ -16,11 +17,9 @@ namespace ExaminationManagement.Models
     public class ExcalManager
     {
         private IWorkbook _workbook;
-        private bool _existTitle;
 
-        public ExcalManager(string path, bool existTitle)
+        public ExcalManager(string path)
         {
-            this._existTitle = existTitle;
             string extension = Path.GetExtension(path);
             if (extension == ".xlsx")//Excel2007
                 this._workbook = new XSSFWorkbook(File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite));
@@ -37,8 +36,18 @@ namespace ExaminationManagement.Models
                 yield return this._workbook.GetSheetName(i);
         }
         //成绩
-        public DataTable GetAchievement()
+        public IEnumerable<Achievement> GetAchievement()
         {
+            ISheet sheet = _workbook.GetSheetAt(0);
+            if (sheet == null || sheet.LastRowNum == 0)
+                return null;
+            IRow cells = sheet.GetRow(0);
+            if (cells.LastCellNum != 6)
+                return null;
+            for (int i = 0; i < cells.LastCellNum; i++)
+            {
+
+            }
             return null;
         }
         
