@@ -22,22 +22,14 @@ namespace ExaminationManagement.Controllers
             switch (type)
             {
                 case RoleType.Admin:
-                    break;
+                    
                 case RoleType.Teacher:
-                    break;
+                    
                 case RoleType.Student:
-                    break;
-                case RoleType.NotFound:
-                    break;
+                    
                 default:
-                    break;
+                    return Content(type.ToString());
             }
-            return null;
-        }
-        public string Test(string username,string password)
-        {
-            SQLManager manager = new SQLManager();
-            return manager.CheckUser(username, password).ToString();
         }
     }
 }

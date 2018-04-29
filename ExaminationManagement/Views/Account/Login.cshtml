@@ -10,47 +10,94 @@
     <meta name="viewport" content="width=device-width" />
     <title>Login</title>
     <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
-
     <link href="~/Content/Account/login.css" rel="stylesheet" />
-    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.js"></script>*@
+    <script src="~/Scripts/jquery-3.0.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#login_btn').click(function () {
+                if (checkInput() === false)
+                    return;
+                $.ajax({
+                    beforeSend: loaddingAppear(),
+                    type: 'post',
+                    success: function (result, status) {
+                        if (result === 'NotFound') {
+                            setTimeout('loaddingDisappear();tooltipAppear("用户名或密码不正确");', 800);
+                        }
+                    },
+                    error: function () {
+                        setTimeout('loaddingDisappear()', 1500);
+                    }
+                });
+            });
+            $('#uername_input').focus(function () {
+                tooltipDisappear();
+            });
+            $('#password_input').focus(function () {
+                tooltipDisappear();
+            });
+        });
+        function ss() {
+            alert('ssss');
+        }
+        //出现加载图标
+        function loaddingAppear() {
+            $('#login_div').css('display', 'none');
+            $('#spinner-container').css('display', 'flex');
+        }
+        //消失加载图标
+        function loaddingDisappear() {
+            $('#login_div').css('display', 'block');
+            $('#spinner-container').css('display', 'none');
+        }
+        //出现提示框
+        function tooltipAppear(message) {
+            $('#tooltip').children('span').text(message);
+            $('#tooltip').slideDown();
+        }
+        //消失提示框
+        function tooltipDisappear() {
+            if ($('#tooltip').css('display') === 'none')
+                return;
+            $('#tooltip').fadeOut(1000);
+        }
+        //检查输入
+        function checkInput() {
+            var legitimate = true;
+            if ($('#uername_input').val() === '') {
+                tooltipAppear('用户名不能为空');
+                legitimate = false;
+            }
+            else if ($('#password_input').val() === '') {
+                tooltipAppear('密码不能为空');
+                legitimate = false;
+            }
+            return legitimate;
+        }
+    </script>
 </head>
 <body>
     <div id="starry-sky-container" style="height:100%;width:100%;">
         <canvas id="starry-sky-canvas" style="z-index:-1;"></canvas>
+        <div id="spinner-container">
+            <span id="spinner" class="fa fa-spinner"></span>
+        </div>
         <div id="login_div">
             <form>
                 <div>
-                    <input id="uername_input" type="text" name="username" maxlength="10" size="39" placeholder="用户名" />
+                    <input id="uername_input" type="text" name="username" maxlength="10" size="39" placeholder="用户名" autocomplete="off" />
                 </div>
                 <div>
-                    <input id="password_input" type="password" name="password" maxlength="10" size="33" placeholder="密码" autocomplete="on" />
+                    <input id="password_input" type="password" name="password" maxlength="10" size="33" placeholder="密码" autocomplete="off" />
                     <button id="login_btn" type="button"><span class="fa fa-arrow-circle-o-right"></span></button>
-                    <div id="tooltip"></div>
+                    <div id="tooltip">
+                        <span></span>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
     
     @Scripts.Render("~/Scripts/StarrySky")
-
-    @*<script>
-        var reference = document.querySelector('#login_btn');
-        var popper = document.querySelector('#ss');
-        var anotherPopper = new Popper(
-            reference,
-            popper,
-            {
-                placement: 'down',
-                onCreate: (data) => {
-                    console.log(1234)
-                },
-                onUpdate: (data) => {
-                    console.log(444)
-                },
-                modifiers: {
-                },
-            }
-        );
-    </script>*@
 </body>
 </html>

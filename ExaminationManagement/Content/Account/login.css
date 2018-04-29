@@ -33,7 +33,54 @@ button {
     cursor: pointer;
 }
 
+#tooltip {
+    background-color: rgba(250, 233, 163,0.45);
+    border-radius: 10px;
+    display: block;
+    text-align: center;
+    line-height: 40px;
+    width: 90%;
+    height: 40px;
+    margin: 10px auto 0;
+    color: rgb(80, 62, 48);
+    font-size: 20px;
+    display: none;
+}
+
+#spinner-container {
+    display: none;
+    /*display: flex;*/
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.2);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#spinner {
+    font-size: 90px;
+    color: rgb(0,120,215);
+    animation-name: spin;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
 #login_div {
+    /*display:none;*/
     background-color: rgba(255,255,255,0.6);
     width: 330px;
     height: 90px;
@@ -44,9 +91,4 @@ button {
     right: 0;
     margin: auto;
     border-radius: 7px;
-}
-
-#tooltip {
-    background-color:rebeccapurple;
-    height:200px;
 }
