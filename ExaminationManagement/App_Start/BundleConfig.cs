@@ -11,7 +11,10 @@ namespace ExaminationManagement
         public static void RegisterBundles(BundleCollection bundles)
         {
             //星空包
-            bundles.Add(new StyleBundle("~/Scripts/StarrySky").Include("~/Scripts/Account/EasePack.min.js","~/Scripts/Account/TweenLite.min.js","~/Scripts/Account/StarrySky.js"));
+            bundles.Add(new ScriptBundle("~/Scripts/StarrySky").Include("~/Scripts/Account/EasePack.min.js","~/Scripts/Account/TweenLite.min.js","~/Scripts/Account/StarrySky.js"));
+
+            //
+            bundles.Add(new StyleBundle("~/Content/font-awesome").Include("~/Content/font-awesome.min.css"));
         }
     }
 }

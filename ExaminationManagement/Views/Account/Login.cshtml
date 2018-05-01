@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     Layout = null;
 }
 
@@ -12,69 +11,7 @@
     <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
     <link href="~/Content/Account/login.css" rel="stylesheet" />
     <script src="~/Scripts/jquery-3.0.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#login_btn').click(function () {
-                if (checkInput() === false)
-                    return;
-                $.ajax({
-                    beforeSend: loaddingAppear(),
-                    type: 'post',
-                    success: function (result, status) {
-                        if (result === 'NotFound') {
-                            setTimeout('loaddingDisappear();tooltipAppear("用户名或密码不正确");', 800);
-                        }
-                    },
-                    error: function () {
-                        setTimeout('loaddingDisappear()', 1500);
-                    }
-                });
-            });
-            $('#uername_input').focus(function () {
-                tooltipDisappear();
-            });
-            $('#password_input').focus(function () {
-                tooltipDisappear();
-            });
-        });
-        function ss() {
-            alert('ssss');
-        }
-        //出现加载图标
-        function loaddingAppear() {
-            $('#login_div').css('display', 'none');
-            $('#spinner-container').css('display', 'flex');
-        }
-        //消失加载图标
-        function loaddingDisappear() {
-            $('#login_div').css('display', 'block');
-            $('#spinner-container').css('display', 'none');
-        }
-        //出现提示框
-        function tooltipAppear(message) {
-            $('#tooltip').children('span').text(message);
-            $('#tooltip').slideDown();
-        }
-        //消失提示框
-        function tooltipDisappear() {
-            if ($('#tooltip').css('display') === 'none')
-                return;
-            $('#tooltip').fadeOut(1000);
-        }
-        //检查输入
-        function checkInput() {
-            var legitimate = true;
-            if ($('#uername_input').val() === '') {
-                tooltipAppear('用户名不能为空');
-                legitimate = false;
-            }
-            else if ($('#password_input').val() === '') {
-                tooltipAppear('密码不能为空');
-                legitimate = false;
-            }
-            return legitimate;
-        }
-    </script>
+    <script src="~/Scripts/Account/Login.js"></script>
 </head>
 <body>
     <div id="starry-sky-container" style="height:100%;width:100%;">

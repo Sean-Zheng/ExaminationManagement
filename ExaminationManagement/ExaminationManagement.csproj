@@ -128,10 +128,12 @@
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\Account\login.css" />
     <Content Include="Content\Layout.css" />
+    <Content Include="Content\Shared\Layout.css" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="Global.asax" />
     <Content Include="Resources\Images\bg.png" />
     <Content Include="Resources\Images\login_bg.jpg" />
+    <Content Include="Scripts\Account\Login.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -181,13 +183,14 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Controllers\TeacherController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ExcelModels\Achievement.cs" />
-    <Compile Include="Models\ExcalManager.cs" />
+    <Compile Include="Models\ExcelManager.cs" />
     <Compile Include="Models\ExcelModels\Gender.cs" />
     <Compile Include="Models\ExcelModels\Information.cs" />
     <Compile Include="Models\DataBaseModels\Person.cs" />
@@ -216,6 +219,7 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

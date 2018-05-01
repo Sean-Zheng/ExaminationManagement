@@ -14,11 +14,11 @@ namespace ExaminationManagement.Models
     /// <summary>
     /// Excel操作
     /// </summary>
-    public class ExcalManager
+    public class ExcelManager
     {
         private IWorkbook _workbook;
 
-        public ExcalManager(string path)
+        public ExcelManager(string path)
         {
             string extension = Path.GetExtension(path);
             if (extension == ".xlsx")//Excel2007
