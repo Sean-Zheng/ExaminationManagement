@@ -17,7 +17,7 @@ namespace ExaminationManagement.Models.ExcelModels
         /// <summary>
         /// 姓名
         /// </summary>
-        public string Namme { get; set; }
+        public string Name { get; set; }
         /// <summary>
         /// 密码
         /// </summary>

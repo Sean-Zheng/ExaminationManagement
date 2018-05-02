@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" />
+    <link rel="shortcut icon" href="~/Resources/Icons/em_favicon.ico" type="image/x-icon">
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/Shared/pace-theme-center-atom.css" rel="stylesheet" />
+    <link href="~/Content/Shared/Layout.css" rel="stylesheet" />
+
+
+    <script src="~/Scripts/pace.min.js"></script>
+    <script src="~/Scripts/jquery-3.0.0.min.js"></script>
+    <title>考务管理系统</title>
+</head>
+<body>
+    <<div id="header">
+         <div>
+             <img class="header-img" src="~/Resources/Icons/logo.png" alt="EM" />
+             <span class="logo-text" style="color: rgb(18, 67, 99)">Examination</span>
+             <span class="logo-text" style="color: rgb(255,255,255);">Management</span>
+         </div>
+        <div id="personal">
+            <div>
+                <img class="header-img" src="~/Resources/Icons/photo.jpg" alt="photo" />
+                <span id="username">User</span>
+            </div>
+            <ul>
+                <li>
+                    <a href="">
+                        <span class="fa fa-envelope-o personal-logo"></span>
+                    </a>
+                    <span class="tip">4</span>
+                </li>
+                <li>
+                    <a href="">
+                        <span class="fa fa-gear personal-logo"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <span class="fa fa-sign-out personal-logo"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="nav">
+        <ul id="nav-menu">
+            <li>
+                <a href="">成绩分析</a>
+            </li>
+            <li>
+                <a href="">添加学生</a>
+            </li>
+            <li>
+                <a href="">添加教师</a>
+            </li>
+            <li>
+                <a href="">课程分配</a>
+            </li>
+            <li>
+                <a href="">学生信息</a>
+            </li>
+            <li>
+                <a href="">教师信息</a>
+            </li>
+        </ul>
+    </div>
+    <div id="content">
+        @RenderBody()
+    </div>
+</body>
+</html>

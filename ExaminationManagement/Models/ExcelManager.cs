@@ -35,84 +35,109 @@ namespace ExaminationManagement.Models
             for (int i = 0; i < this._workbook.NumberOfSheets; i++)
                 yield return this._workbook.GetSheetName(i);
         }
-        //成绩
-        public IEnumerable<Achievement> GetAchievement()
+        /// <summary>
+        /// 检查成绩模板是否合法
+        /// </summary>
+        /// <returns></returns>
+        public bool CheackAchievementTemplates()
         {
             ISheet sheet = _workbook.GetSheetAt(0);
             if (sheet == null || sheet.LastRowNum == 0)
-                return null;
+                return false;
             IRow cells = sheet.GetRow(0);
             if (cells.LastCellNum != 6)
-                return null;
-            for (int i = 0; i < cells.LastCellNum; i++)
-            {
-
-            }
-            return null;
+                return false;
+            if (cells.GetCell(0).ToString() != "课程名")
+                return false;
+            if (cells.GetCell(1).ToString() != "学生姓名")
+                return false;
+            if (cells.GetCell(2).ToString() != "学号")
+                return false;
+            if (cells.GetCell(3).ToString() != "平时成绩")
+                return false;
+            if (cells.GetCell(4).ToString() != "期中成绩")
+                return false;
+            if (cells.GetCell(5).ToString() != "期末成绩")
+                return false;
+            return true;
         }
-        
-        //public IEnumerable<StuInfo> GetStuInfo()
-        //{
-        //    ISheet sheet = _workbook.GetSheetAt(0);
-        //    if (sheet == null || sheet.LastRowNum == 0)
-        //        return null;
-        //    for (int i = 0; i < sheet.LastRowNum; i++)
-        //    {
-        //        IRow cells = sheet.GetRow(i);
-        //        for (int j = 0; j < cells.LastCellNum; j++)
-        //        {
-        //            ICell cell = cells.GetCell(j);
-        //        }
-        //    }
-        //}
-
-        #region
-        //public DataTable GetTable(ISheet sheet)
-        //{
-        //    if (sheet == null || sheet.LastRowNum == 0)
-        //        return null;
-        //    DataTable table = new DataTable(sheet.SheetName);
-        //    IRow row = null;
-        //    if (this.m_existTitle)
-        //    {
-        //        row = sheet.GetRow(0);
-        //        for (int i = 0; i < row.LastCellNum; i++)
-        //        {
-        //            ICell cell = row.GetCell(i);
-        //            DataColumn column = new DataColumn(cell.ToString().Trim());
-        //            table.Columns.Add(column);
-        //        }
-        //        for (int i = 1; i < sheet.LastRowNum; i++)
-        //        {
-        //            row = sheet.GetRow(i);
-        //            DataRow dr = table.NewRow();
-        //            for (int j = 0; j < row.LastCellNum; j++)
-        //            {
-        //                ICell cell = row.GetCell(j);
-        //                dr[j] = cell.ToString();
-        //            }
-        //            table.Rows.Add(dr);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        row = sheet.GetRow(0);
-        //        DataColumn[] columns = new DataColumn[row.LastCellNum];
-        //        table.Columns.AddRange(columns);
-        //        for (int i = 0; i < sheet.LastRowNum; i++)
-        //        {
-        //            row = sheet.GetRow(i);
-        //            DataRow dr = table.NewRow();
-        //            for (int j = 0; j < row.LastCellNum; j++)
-        //            {
-        //                ICell cell = row.GetCell(j);
-        //                dr[j] = cell.ToString();
-        //            }
-        //            table.Rows.Add(dr);
-        //        }
-        //    }
-        //    return table;
-        //}
-        #endregion
+        /// <summary>
+        /// 返回学生成绩
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Achievement> GetAchievement()
+        {
+            ISheet sheet = _workbook.GetSheetAt(0);
+            for (int i = 1; i < sheet.LastRowNum; i++)
+            {
+                IRow cells = sheet.GetRow(i);
+                Achievement achievement = new Achievement
+                {
+                    Curriculum = cells.GetCell(0).ToString() ?? "",
+                    Name = cells.GetCell(1).ToString() ?? "",
+                    StudentId = cells.GetCell(2).ToString() ?? "",
+                    RegularGrade = float.TryParse(cells.GetCell(3).ToString(), out float temp) ? temp : 0,
+                    MidtermGrade = float.TryParse(cells.GetCell(4).ToString(), out temp) ? temp : 0,
+                    FinalExamGrade = float.TryParse(cells.GetCell(5).ToString(), out temp) ? temp : 0
+                };
+                yield return achievement;
+            }
+        }
+        /// <summary>
+        /// 检查信息模板是否合法
+        /// </summary>
+        /// <returns></returns>
+        public bool CheackInformationTemplates()
+        {
+            ISheet sheet = _workbook.GetSheetAt(0);
+            if (sheet == null || sheet.LastRowNum == 0)
+                return false;
+            IRow cells = sheet.GetRow(0);
+            if (cells.LastCellNum != 7)
+                return false;
+            if (cells.GetCell(0).ToString() != "学号")
+                return false;
+            if (cells.GetCell(1).ToString() != "姓名")
+                return false;
+            if (cells.GetCell(2).ToString() != "密码")
+                return false;
+            if (cells.GetCell(3).ToString() != "性别")
+                return false;
+            if (cells.GetCell(4).ToString() != "专业")
+                return false;
+            if (cells.GetCell(5).ToString() != "班级")
+                return false;
+            if (cells.GetCell(6).ToString() != "入学年份")
+                return false;
+            return true;
+        }
+        /// <summary>
+        /// 返回学生信息
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Information> GetInformation()
+        {
+            ISheet sheet = _workbook.GetSheetAt(0);
+            for (int i = 1; i < sheet.LastRowNum; i++)
+            {
+                IRow cells = sheet.GetRow(i);
+                Information information = new Information
+                {
+                    StudentId = cells.GetCell(0).ToString() ?? "",
+                    Name = cells.GetCell(1).ToString() ?? "",
+                    Password = cells.GetCell(2).ToString() ?? "",
+                    Major = cells.GetCell(4).ToString() ?? "",
+                    ClassNumber = int.TryParse(cells.GetCell(5).ToString(), out int temp) ? temp : 0,
+                    EnrollmentYear = int.TryParse(cells.GetCell(6).ToString(), out temp) ? temp : 0
+                };
+                if (cells.GetCell(3).ToString() == "男")
+                    information.Sex = Gender.Male;
+                else if (cells.GetCell(3).ToString() == "女")
+                    information.Sex = Gender.Female;
+                else
+                    information.Sex = Gender.Unknow;
+                yield return information;
+            }
+        }
     }
 }

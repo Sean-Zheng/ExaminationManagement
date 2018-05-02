@@ -11,6 +11,10 @@ namespace ExaminationManagement.Models.ExcelModels
     public enum Gender
     {
         /// <summary>
+        /// 未知
+        /// </summary>
+        Unknow,
+        /// <summary>
         /// 男
         /// </summary>
         Male,
