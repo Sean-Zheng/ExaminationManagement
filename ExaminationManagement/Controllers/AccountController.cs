@@ -11,10 +11,20 @@ namespace ExaminationManagement.Controllers
 {
     public class AccountController : Controller
     {
+        /// <summary>
+        /// 登录界面
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Login()
         {
             return View();
         }
+        /// <summary>
+        /// 登录验证
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Login(string username,string password)
         {
@@ -39,19 +49,22 @@ namespace ExaminationManagement.Controllers
             }
             return Content(type.ToString());
         }
-        public void SignOut()
+        /// <summary>
+        /// 退出登录
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult SignOut()
         {
             FormsAuthentication.SignOut();
+            return RedirectToAction("Login");
+
         }
-        public ActionResult Test(string id)
-        {
-            if (id == "1")
-                return RedirectToAction("Index", "Admin");
-            else
-                return new EmptyResult();
-            //return RedirectToActionPermanent("Index", "Admin");
-            //return Redirect("/Admin/Index");
-        }
+        /// <summary>
+        /// 设置Cookies
+        /// </summary>
+        /// <param name="username">用户名</param>
+        /// <param name="userType">类型</param>
+        /// <returns></returns>
         private HttpCookie GetCookie(string username,string userType)
         {
             FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(

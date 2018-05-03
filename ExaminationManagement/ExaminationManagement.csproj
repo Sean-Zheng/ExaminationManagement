@@ -128,7 +128,7 @@
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\Account\login.css" />
     <Content Include="Content\Shared\Layout.css" />
-    <Content Include="Content\Shared\pace-theme-center-atom.css" />
+    <Content Include="Content\Shared\pace-theme-minimal.css" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="Global.asax" />
     <Content Include="Resources\Icons\em_favicon.ico" />
@@ -221,8 +221,10 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Views\Shared\_StudentLayout.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Student\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -233,7 +235,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Resources\Temp\" />
-    <Folder Include="Views\Student\" />
     <Folder Include="Views\Teacher\" />
   </ItemGroup>
   <ItemGroup>

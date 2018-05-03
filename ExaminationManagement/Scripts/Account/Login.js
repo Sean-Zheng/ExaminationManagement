@@ -17,11 +17,11 @@
                     setTimeout('ErrorPassword()', 500);
                 }
                 else if (result == 'Admin')
-                    setTimeout('window.location.href = "/Admin/Index"',500);
+                    setTimeout('window.location.href = "/Admin/Index"', 500);
                 else if (result == 'Teacher')
-                    setTimeout('window.location.href = "/Admin/Index"', 500);
+                    setTimeout('window.location.href = "/Teacher/Index"', 500);
                 else if (result == 'Student')
-                    setTimeout('window.location.href = "/Admin/Index"', 500);
+                    setTimeout('window.location.href = "/Student/Index"', 500);
                 else
                     loaddingDisappear();
             },

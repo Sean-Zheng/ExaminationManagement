@@ -68,6 +68,7 @@ namespace ExaminationManagement.Models
         public IEnumerable<Achievement> GetAchievement()
         {
             ISheet sheet = _workbook.GetSheetAt(0);
+            float temp;
             for (int i = 1; i < sheet.LastRowNum; i++)
             {
                 IRow cells = sheet.GetRow(i);
@@ -76,7 +77,7 @@ namespace ExaminationManagement.Models
                     Curriculum = cells.GetCell(0).ToString() ?? "",
                     Name = cells.GetCell(1).ToString() ?? "",
                     StudentId = cells.GetCell(2).ToString() ?? "",
-                    RegularGrade = float.TryParse(cells.GetCell(3).ToString(), out float temp) ? temp : 0,
+                    RegularGrade = float.TryParse(cells.GetCell(3).ToString(), out temp) ? temp : 0,
                     MidtermGrade = float.TryParse(cells.GetCell(4).ToString(), out temp) ? temp : 0,
                     FinalExamGrade = float.TryParse(cells.GetCell(5).ToString(), out temp) ? temp : 0
                 };
@@ -118,6 +119,7 @@ namespace ExaminationManagement.Models
         public IEnumerable<Information> GetInformation()
         {
             ISheet sheet = _workbook.GetSheetAt(0);
+            int temp;
             for (int i = 1; i < sheet.LastRowNum; i++)
             {
                 IRow cells = sheet.GetRow(i);
@@ -127,7 +129,7 @@ namespace ExaminationManagement.Models
                     Name = cells.GetCell(1).ToString() ?? "",
                     Password = cells.GetCell(2).ToString() ?? "",
                     Major = cells.GetCell(4).ToString() ?? "",
-                    ClassNumber = int.TryParse(cells.GetCell(5).ToString(), out int temp) ? temp : 0,
+                    ClassNumber = int.TryParse(cells.GetCell(5).ToString(), out temp) ? temp : 0,
                     EnrollmentYear = int.TryParse(cells.GetCell(6).ToString(), out temp) ? temp : 0
                 };
                 if (cells.GetCell(3).ToString() == "男")

@@ -21,10 +21,10 @@ namespace ExaminationManagement.Models.DataBaseModels
         /// <summary>
         /// 已获学分
         /// </summary>
-        public float Credit_got { get; set; }
+        public double Credit_got { get; set; }
         /// <summary>
         /// 学分要求
         /// </summary>
-        public float Credit_need { get; set; }
+        public double Credit_need { get; set; }
     }
 }

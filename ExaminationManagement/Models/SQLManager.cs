@@ -54,17 +54,51 @@ namespace ExaminationManagement.Models
                         return RoleType.Admin;
                     case 1:
                         return RoleType.Teacher;
-                    case 3:
+                    case 2:
                         return RoleType.Student;
                     default:
                         return RoleType.NotFound;
                 }
             }
         }
-        public void AddUser(string password)
+        
+        public StuInfo GetStuInfo(string studentId)
         {
-
+            StuInfo info = null;
+            using(SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "select * from tb_stuinfo where stu_id=@studentId";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                SqlParameter parameter = new SqlParameter("@studentId", studentId);
+                command.Parameters.Add(parameter);
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    info = new StuInfo
+                    {
+                        Stu_id = reader[0].ToString(),
+                        Name = reader[1].ToString(),
+                        Birth = reader[2].ToString(),
+                        Photo = reader[3].ToString(),
+                        Tel = reader[4].ToString(),
+                        Email = reader[5].ToString(),
+                        Major_id = reader.GetInt32(6),
+                        Enroll_year = reader.GetInt32(7),
+                        Credit_got = reader.GetDouble(8),
+                        Credit_need = reader.GetDouble(9)
+                    };
+                }
+                reader.Close();
+                _connection.Close();
+                return info;
+            }
+            
         }
+
+
+
+
         /// <summary>
         /// 加密字符串
         /// </summary>
