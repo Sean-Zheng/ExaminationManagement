@@ -14,7 +14,7 @@
             },
             success: function (result) {
                 if (result === 'NotFound') {
-                    setTimeout('ErrorPassword()', 500);
+                    setTimeout(ErrorPassword, 500);
                 }
                 else if (result == 'Admin')
                     setTimeout('window.location.href = "/Admin/Index"', 500);
@@ -26,7 +26,7 @@
                     loaddingDisappear();
             },
             error: function () {
-                setTimeout('loaddingDisappear()', 1500);
+                setTimeout(loaddingDisappear, 500);
             }
         });
     });

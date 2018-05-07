@@ -14,7 +14,8 @@ namespace ExaminationManagement.Models
     /// <summary>
     /// 数据库操作
     /// </summary>
-    public class SQLManager
+    public class SQLManager//阿斯顿马丁路德金
+
     {
         private SqlConnection _connection;
         private DataSet _dataSet;
@@ -28,15 +29,16 @@ namespace ExaminationManagement.Models
             this._connection = new SqlConnection(connectionString);
             this._dataSet = new DataSet("ExamDb");
         }
+        #region  select
         /// <summary>
         /// 登录验证
         /// </summary>
         /// <param name="username">用户名</param>
         /// <param name="password">密码</param>
         /// <returns>验证成功返回用户类型，失败返回NotFound</returns>
-        public RoleType CheckUser(string username,string password)
+        public RoleType CheckUser(string username, string password)
         {
-            using(SqlCommand command = _connection.CreateCommand())
+            using (SqlCommand command = _connection.CreateCommand())
             {
                 password = Encryption(password);
                 command.CommandText = "select role_id from tb_users where id=@username and passwd=@password";
@@ -61,11 +63,29 @@ namespace ExaminationManagement.Models
                 }
             }
         }
-        
+        public IEnumerable<Major> GetMajors()
+        {
+            using(SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "select * from tb_major";
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    Major major = new Major
+                    {
+                        Major_id = reader.GetInt32(0),
+                        MajorName = reader.GetString(1)
+                    };
+                    yield return major;
+                }
+                reader.Close();
+            }
+        }
+        //未验证
         public StuInfo GetStuInfo(string studentId)
         {
             StuInfo info = null;
-            using(SqlCommand command = _connection.CreateCommand())
+            using (SqlCommand command = _connection.CreateCommand())
             {
                 command.CommandText = "select * from tb_stuinfo where stu_id=@studentId";
                 if (_connection.State == ConnectionState.Closed)
@@ -93,12 +113,21 @@ namespace ExaminationManagement.Models
                 _connection.Close();
                 return info;
             }
-            
         }
+        #endregion
+
+        #region
+        //
+        public void AddTeacher(TeachInfo info)
+        {
+            SqlDataAdapter adapter = new SqlDataAdapter("", _connection);
+        }
+        #endregion
 
 
 
 
+        #region others
         /// <summary>
         /// 加密字符串
         /// </summary>
@@ -110,5 +139,6 @@ namespace ExaminationManagement.Models
             byte[] encryptdata = md5.ComputeHash(Encoding.Default.GetBytes(text));
             return Convert.ToBase64String(encryptdata);
         }
+        #endregion
     }
 }

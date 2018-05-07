@@ -187,11 +187,13 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\AnalysisController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Controllers\TeacherController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataBaseModels\Major.cs" />
     <Compile Include="Models\ExcelModels\Achievement.cs" />
     <Compile Include="Models\ExcelManager.cs" />
     <Compile Include="Models\ExcelModels\Gender.cs" />
@@ -222,9 +224,7 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
-    <Content Include="Views\Shared\_StudentLayout.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
-    <Content Include="Views\Student\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -235,6 +235,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Resources\Temp\" />
+    <Folder Include="Views\Analysis\" />
+    <Folder Include="Views\Student\" />
     <Folder Include="Views\Teacher\" />
   </ItemGroup>
   <ItemGroup>

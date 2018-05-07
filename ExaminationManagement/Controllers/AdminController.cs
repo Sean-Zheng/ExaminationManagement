@@ -10,10 +10,18 @@ namespace ExaminationManagement.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        public ActionResult Index()
+        public AdminController()
         {
             ViewBag.userName = User.Identity.Name;
+        }
+        public ActionResult Index()
+        {
             return View();
         }
+        //public ActionResult AddTeacher()
+        //{
+
+        //}
+        
     }
 }

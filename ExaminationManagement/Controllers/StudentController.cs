@@ -8,10 +8,9 @@ using System.Web.Mvc;
 
 namespace ExaminationManagement.Controllers
 {
-    //[Authorize(Roles = "Student")]
+    [Authorize(Roles = "Student")]
     public class StudentController : Controller
     {
-        // GET: Student
         public ActionResult Index()
         {
             SQLManager manager = new SQLManager();

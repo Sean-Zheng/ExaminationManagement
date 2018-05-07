@@ -1,26 +1,51 @@
 ﻿<!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
     <link rel="shortcut icon" href="~/Resources/Icons/em_favicon.ico" type="image/x-icon">
     <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
     <link href="~/Content/Shared/pace-theme-minimal.css" rel="stylesheet" />
     <link href="~/Content/Shared/Layout.css" rel="stylesheet" />
 
-
     <script src="~/Scripts/pace.min.js"></script>
     <script src="~/Scripts/jquery-3.0.0.min.js"></script>
-    <title>考务管理系统</title>
+    @RenderSection("script", false)
+    @RenderSection("style", false)
+    <script>
+        $(document).ready(function () {
+            $('.noExtension').hover(
+                function () {
+                    if ($(this).hasClass('Extension')) {
+                        return;
+                    }
+                    $(this).children('.li-tip').css('visibility', 'visible');
+                },
+                function () {
+                    if ($(this).hasClass('Extension')) {
+                        return;
+                    }
+                    $(this).children('.li-tip').css('visibility', 'hidden');
+                });
+            $('.hasSub>a').click(function () {
+                $(this).toggleClass('Extension');
+                $(this).toggleClass('noExtension');
+                $(this).children('.down').toggleClass('fa-angle-down');
+                $(this).children('.down').addClass('fa-angle-up');
+                $(this).next('ul').slideToggle();
+            });
+        });
+    </script>
 </head>
+
 <body>
     <div id="header">
-         <div>
-             <img class="header-img" src="~/Resources/Icons/logo.png" alt="EM" />
-             <span class="logo-text" style="color: rgb(18, 67, 99)">Examination</span>
-             <span class="logo-text" style="color: rgb(255,255,255);">Management</span>
-         </div>
+        <div>
+            <img class="header-img" src="~/Resources/Icons/logo.png" alt="EM" />
+            <span class="logo-text" style="color: rgb(18, 67, 99)">Examination</span>
+            <span class="logo-text" style="color: rgb(255,255,255);">Management</span>
+        </div>
         <div id="personal">
             <div>
                 <img class="header-img" src="~/Resources/Icons/photo.jpg" alt="photo" />
@@ -31,7 +56,7 @@
                     <a href="">
                         <span class="fa fa-envelope-o personal-logo"></span>
                     </a>
-                    <span class="tip">4</span>
+                    <span class="tip head-tip">4</span>
                 </li>
                 <li>
                     <a href="">
@@ -48,23 +73,49 @@
     </div>
     <div id="nav">
         <ul id="nav-menu">
-            <li>
-                <a href="">成绩分析</a>
+            <li class="hasSub">
+                <a href="#" class="noExtension">
+                    <span class="fa fa-line-chart menu-icon"></span>
+                    成绩分析
+                    <span class="fa fa-angle-down down"></span>
+                    <span class="tip li-tip">4</span>
+                </a>
+                <ul>
+                    <li>
+                        <a href="#">课程成绩分析</a>
+                    </li>
+                    <li>
+                        <a href="#">班级成绩分析</a>
+                    </li>
+                    <li>
+                        <a href="#">学生成绩分析</a>
+                    </li>
+                </ul>
             </li>
             <li>
-                <a href="">添加学生</a>
+                <a href="">
+                    <span class="fa fa-plus-square menu-icon"></span>添加学生
+                </a>
             </li>
             <li>
-                <a href="">添加教师</a>
+                <a href="">
+                    <span class="fa fa-plus-square-o menu-icon"></span>添加教师
+                </a>
             </li>
             <li>
-                <a href="">课程分配</a>
+                <a href="">
+                    <span class="fa fa-adjust menu-icon"></span>课程分配
+                </a>
             </li>
             <li>
-                <a href="">学生信息</a>
+                <a href="">
+                    <span class="fa fa-commenting menu-icon"></span>学生信息
+                </a>
             </li>
             <li>
-                <a href="">教师信息</a>
+                <a href="">
+                    <span class="fa fa-commenting-o menu-icon"></span>教师信息
+                </a>
             </li>
         </ul>
     </div>
@@ -72,4 +123,5 @@
         @RenderBody()
     </div>
 </body>
+
 </html>
