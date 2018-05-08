@@ -14,7 +14,7 @@ body {
 
 #header {
     height: 50px;
-    background-color: rgba(117, 185, 230);
+    background-color: rgba(117, 185, 230,1);
     display: flex;
     justify-content: space-between;
     padding: 0 25px;
@@ -135,7 +135,9 @@ ul {
     visibility: hidden;
 }
 
-#content{
+#content {
+    margin-left: 210px;
     padding: 30px;
-    float: left;
+    overflow: auto;
+    height: 90%;
 }

@@ -1,5 +1,4 @@
-﻿using ExaminationManagement.Models.DataBaseModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -14,11 +13,9 @@ namespace ExaminationManagement.Models
     /// <summary>
     /// 数据库操作
     /// </summary>
-    public class SQLManager//阿斯顿马丁路德金
-
+    public class SQLManager
     {
         private SqlConnection _connection;
-        private DataSet _dataSet;
 
         /// <summary>
         /// 连接数据库
@@ -27,7 +24,7 @@ namespace ExaminationManagement.Models
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ExamDb"].ConnectionString;
             this._connection = new SqlConnection(connectionString);
-            this._dataSet = new DataSet("ExamDb");
+            //this._dataSet = new DataSet("ExamDb");
         }
         #region  select
         /// <summary>
@@ -36,7 +33,7 @@ namespace ExaminationManagement.Models
         /// <param name="username">用户名</param>
         /// <param name="password">密码</param>
         /// <returns>验证成功返回用户类型，失败返回NotFound</returns>
-        public RoleType CheckUser(string username, string password)
+        public DataBaseModels.RoleType CheckUser(string username, string password)
         {
             using (SqlCommand command = _connection.CreateCommand())
             {
@@ -49,21 +46,21 @@ namespace ExaminationManagement.Models
                 object reslut = command.ExecuteScalar();
                 _connection.Close();
                 if (reslut == null)
-                    return RoleType.NotFound;
+                    return DataBaseModels.RoleType.NotFound;
                 switch (int.Parse(reslut.ToString()))
                 {
                     case 0:
-                        return RoleType.Admin;
+                        return DataBaseModels.RoleType.Admin;
                     case 1:
-                        return RoleType.Teacher;
+                        return DataBaseModels.RoleType.Teacher;
                     case 2:
-                        return RoleType.Student;
+                        return DataBaseModels.RoleType.Student;
                     default:
-                        return RoleType.NotFound;
+                        return DataBaseModels.RoleType.NotFound;
                 }
             }
         }
-        public IEnumerable<Major> GetMajors()
+        public IEnumerable<DataBaseModels.Major> GetMajors()
         {
             using(SqlCommand command = _connection.CreateCommand())
             {
@@ -71,7 +68,7 @@ namespace ExaminationManagement.Models
                 SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    Major major = new Major
+                    DataBaseModels.Major major = new DataBaseModels.Major
                     {
                         Major_id = reader.GetInt32(0),
                         MajorName = reader.GetString(1)
@@ -81,10 +78,26 @@ namespace ExaminationManagement.Models
                 reader.Close();
             }
         }
-        //未验证
-        public StuInfo GetStuInfo(string studentId)
+
+        public IEnumerable<DataBaseModels.Course> GetCourses()
         {
-            StuInfo info = null;
+            SqlDataAdapter adapter = new SqlDataAdapter("", _connection);
+            DataTable table = new DataTable();
+            adapter.Fill(table);
+
+            foreach (var item in table.Rows)
+            {
+                DataBaseModels.Course course = new DataBaseModels.Course
+                {
+
+                };
+                yield return course;
+            }
+        }
+        //未验证
+        public DataBaseModels.StuInfo GetStuInfo(string studentId)
+        {
+            DataBaseModels.StuInfo info = null;
             using (SqlCommand command = _connection.CreateCommand())
             {
                 command.CommandText = "select * from tb_stuinfo where stu_id=@studentId";
@@ -95,7 +108,7 @@ namespace ExaminationManagement.Models
                 SqlDataReader reader = command.ExecuteReader();
                 if (reader.Read())
                 {
-                    info = new StuInfo
+                    info = new DataBaseModels.StuInfo
                     {
                         Stu_id = reader[0].ToString(),
                         Name = reader[1].ToString(),
@@ -118,9 +131,31 @@ namespace ExaminationManagement.Models
 
         #region
         //
-        public void AddTeacher(TeachInfo info)
+        public void AddTeacher(DataBaseModels.TeachInfo info)
         {
             SqlDataAdapter adapter = new SqlDataAdapter("", _connection);
+        }
+        /// <summary>
+        /// 添加课程
+        /// </summary>
+        /// <param name="courses">课程:课程名称和学分</param>
+        /// <returns></returns>
+        public bool AddCourse(WebModels.Course[] courses)
+        {
+            SqlDataAdapter adapter = new SqlDataAdapter("select * from tb_course", _connection);
+            SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+            DataTable table = new DataTable();
+            adapter.Fill(table);
+
+            foreach (var item in courses)
+            {
+                DataRow row = table.NewRow();
+                row[1] = item.CourseName;
+                row[3] = item.Credit;
+                table.Rows.Add(row);
+            }
+
+            return adapter.Update(table) > 0 ? true : false;
         }
         #endregion
 

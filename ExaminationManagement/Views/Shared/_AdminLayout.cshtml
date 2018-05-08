@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>考务管理</title>
     <link rel="shortcut icon" href="~/Resources/Icons/em_favicon.ico" type="image/x-icon">
     <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
     <link href="~/Content/Shared/pace-theme-minimal.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <link href="~/Content/Shared/Layout.css" rel="stylesheet" />
 
     <script src="~/Scripts/pace.min.js"></script>
-    <script src="~/Scripts/jquery-3.0.0.min.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     @RenderSection("script", false)
     @RenderSection("style", false)
     <script>
@@ -103,8 +104,13 @@
                 </a>
             </li>
             <li>
+                <a href="/Admin/AddMajor">
+                    <span class="fa fa-bars menu-icon"></span>添加课程
+                </a>
+            </li>
+            <li>
                 <a href="">
-                    <span class="fa fa-adjust menu-icon"></span>课程分配
+                    <span class="fa fa-adjust menu-icon"></span>课程信息
                 </a>
             </li>
             <li>

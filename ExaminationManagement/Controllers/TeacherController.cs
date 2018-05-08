@@ -7,7 +7,7 @@ using ExaminationManagement.Models;
 
 namespace ExaminationManagement.Controllers
 {
-    [Authorize(Roles = "Teacher")]
+    [Authorize(Roles = "Teacher,Admin")]
     public class TeacherController : Controller
     {
         public ActionResult Index()
