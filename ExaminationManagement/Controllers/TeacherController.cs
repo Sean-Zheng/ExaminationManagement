@@ -10,6 +10,7 @@ namespace ExaminationManagement.Controllers
     [Authorize(Roles = "Teacher,Admin")]
     public class TeacherController : Controller
     {
+        [Authorize(Roles = "Teacher")]
         public ActionResult Index()
         {
             return View();
@@ -20,6 +21,7 @@ namespace ExaminationManagement.Controllers
         /// <param name="file"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize(Roles = "Teacher")]
         public ActionResult UploadAchievement(HttpPostedFileBase file)
         {
             string fileName = HttpContext.Server.MapPath("~/Resources/Temp")
@@ -36,6 +38,7 @@ namespace ExaminationManagement.Controllers
         /// <param name="file"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize(Roles = "Teacher,Admin")]
         public ActionResult UploadInformation(HttpPostedFileBase file)
         {
             return null;
@@ -44,6 +47,7 @@ namespace ExaminationManagement.Controllers
         /// 下载学生成绩模板
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Teacher,Admin")]
         public ActionResult DownLoadAchievement()
         {
             string fileName = HttpContext.Server.MapPath("~/Resources/Templates/学生成绩模板.xlsx");
@@ -53,6 +57,7 @@ namespace ExaminationManagement.Controllers
         /// 下载学生信息模板
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Teacher,Admin")]
         public ActionResult DownLoadInformation()
         {
             string fileName = HttpContext.Server.MapPath("~/Resources/Templates/学生信息模板.xlsx");

@@ -1,0 +1,60 @@
+﻿@model IEnumerable<ExaminationManagement.Models.DataBaseModels.Major>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section head{
+    @Styles.Render("~/Content/bootstrap-table")
+    @Scripts.Render("~/Scripts/bootstrap-table")
+    <script>
+        $(document).ready(function () {
+            $('#tb_majors').bootstrapTable({
+                sortName: 'MajorId',
+                striped: true,
+                search: true,
+                columns: [
+                    {
+                        field: 'MajorId',
+                    },
+                    {
+                        field: 'MajorName',
+                        sortable: true,
+                        editable: {
+                            type: 'text'
+                        }
+                    }
+                ],
+                onEditableSave: function (field, row, oldValue, $el) {
+                    $.ajax({
+                        url: '/Admin/EditMajor',
+                        data: {
+                            majorId: row.MajorId,
+                            majorName: row.MajorName
+                        },
+                        type:'post'
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+<table id="tb_majors">
+    <thead>
+        <tr>
+            <th>专业号</th>
+            <th>专业名称</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Major_id)</td>
+                <td>@Html.DisplayFor(modelItem => item.MajorName)</td>
+                <td>@Html.ActionLink("删除", "DeleteMajor", new { majorId = item.Major_id },new { @class="btn btn-link"})</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -14,19 +14,19 @@
             },
             success: function (result) {
                 if (result === 'NotFound') {
-                    setTimeout(ErrorPassword, 500);
+                    setTimeout(ErrorPassword, 200);
                 }
                 else if (result == 'Admin')
-                    setTimeout('window.location.href = "/Admin/Index"', 500);
+                    setTimeout('window.location.href = "/Admin/Index"', 200);
                 else if (result == 'Teacher')
-                    setTimeout('window.location.href = "/Teacher/Index"', 500);
+                    setTimeout('window.location.href = "/Teacher/Index"', 200);
                 else if (result == 'Student')
-                    setTimeout('window.location.href = "/Student/Index"', 500);
+                    setTimeout('window.location.href = "/Student/Index"', 200);
                 else
                     loaddingDisappear();
             },
             error: function () {
-                setTimeout(loaddingDisappear, 500);
+                setTimeout(loaddingDisappear, 200);
             }
         });
     });

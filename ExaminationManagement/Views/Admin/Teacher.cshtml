@@ -1,5 +1,6 @@
 ﻿
 @{
+    ViewBag.Title = "Teacher";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -34,25 +35,28 @@
             $('#submit').click(function () {
                 if (!checkInput())
                     return;
-                var courses = [];
+                var teachers = [];
                 $('.form-inline').each(function () {
-                    var course = {};
-                    course.CourseName = $(this).find('input[type="text"]').val();
-                    course.Credit = parseFloat($(this).find('input[type="number"]').val());
-                    courses.push(course);
+                    var teacher = {};
+                    var puts = $(this).find('input[type="text"]');
+                    teacher.Tea_id = puts.first().val();
+                    teacher.TeaName = puts.eq(1).val();
+                    teacher.Passwd = puts.last().val();
+                    teachers.push(teacher);
                 });
-                $.ajax({
-                    type: 'post',
-                    data: {
-                        courses: courses
-                    },
-                    success: function (result) {
-                        if (result == 'success')
-                            location.href = '/Admin/Message';
-                        else
-                            alert('提交失败');
-                    }
-                });
+                console.log(teachers);
+                //$.ajax({
+                //    type: 'post',
+                //    data: {
+                //        courses: courses
+                //    },
+                //    success: function (result) {
+                //        if (result == 'success')
+                //            location.href = '/Admin/Message';
+                //        else
+                //            alert('提交失败');
+                //    }
+                //});
             });
         });
         function del() {
@@ -60,30 +64,45 @@
         }
         function reset() {
             var divs = $(this).prevAll('div');
-            divs.first().children('input').val(3);
+            divs.first().children('input').val('123456');
+            divs.eq(1).children('input').val('');
             divs.last().children('input').val('');
         }
         function checkInput() {
             var flag = true;
             $('input[type="text"]').each(function () {
                 if ($(this).val() == '') {
-                    alert('课程名称不可为空');
+                    alert('请将信息补充完整');
                     flag = false;
                     return false;
                 }
             });
             return flag;
         }
+        function selectValue() {
+            var selectHtml = '<select class="form-control">' +
+                '<option>1</option>' +
+                '<option>2</option>' +
+                '<option>3</option>' +
+                '</select >';
+            return selectHtml;
+        }
         function addOne() {
+            var select = selectValue();
             var text = '<form class="form-inline">' +
                 '<div class="form-group">' +
-                '<label for="CourseName"> 课程名称</label>' +
-                '<input type="text" class="form-control" id="CourseName" placeholder="课程名称">' +
+                '<label for="tea_id">教职工号</label>' +
+                '<input type="text" class="form-control" id="tea_id" placeholder="教职工号">' +
                 '</div>' +
                 '<div class="form-group">' +
-                '<label for="Credit"> 学分</label>' +
-                '<input type="number" min="0" step="0.5" value="3" class="form-control" id="Credit" placeholder="学分">' +
+                '<label for="tea_name">姓名</label>' +
+                '<input type="text" class="form-control" id="tea_name" placeholder="姓名">' +
                 '</div>' +
+                '<div class="form-group">' +
+                '<label for="passwd"> 密码</label>' +
+                '<input type="text" value="123456" class="form-control" id="passwd" placeholder="密码">' +
+                '</div>' +
+                select +
                 '<button type="button" class="btn btn-default del">' +
                 '<span class="fa fa-trash"></span> 删除</button>' +
                 '<button type="button" class="btn btn-default reset">重置</button>' +

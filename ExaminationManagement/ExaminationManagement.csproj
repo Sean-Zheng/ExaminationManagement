@@ -238,6 +238,7 @@
     <Compile Include="Models\DataBaseModels\TeachInfo.cs" />
     <Compile Include="Models\DataBaseModels\User.cs" />
     <Compile Include="Models\WebModels\Course.cs" />
+    <Compile Include="Models\WebModels\Teacher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -257,6 +258,11 @@
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
     <Content Include="Views\Admin\Message.cshtml" />
+    <Content Include="Views\Shared\_TeacherLayout.cshtml" />
+    <Content Include="Views\Teacher\Index.cshtml" />
+    <Content Include="Views\Admin\Teacher.cshtml" />
+    <Content Include="Views\Admin\Major.cshtml" />
+    <Content Include="Views\Admin\MajorMessage.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -269,7 +275,6 @@
     <Folder Include="Resources\Temp\" />
     <Folder Include="Views\Analysis\" />
     <Folder Include="Views\Student\" />
-    <Folder Include="Views\Teacher\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

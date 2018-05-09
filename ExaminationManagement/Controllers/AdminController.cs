@@ -16,6 +16,55 @@ namespace ExaminationManagement.Controllers
             ViewBag.userName = User.Identity.Name;
             return View();
         }
+        public ActionResult Major()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Major(string[] majors)
+        {
+            SQLManager manager = new SQLManager();
+            bool flag = manager.AddMajors(majors);
+            if (flag)
+                return Content("success");
+            return Content("failure");
+        }
+        public ActionResult MajorMessage()
+        {
+            SQLManager manager = new SQLManager();
+            var majors = manager.GetMajors();
+            return View(majors);
+        }
+        [HttpPost]
+        public ActionResult EditMajor(int majorId,string majorName)
+        {
+            SQLManager manager = new SQLManager();
+            manager.UpdateMajors(majorId, majorName);
+            return new EmptyResult();
+        }
+        public ActionResult DeleteMajor(int majorId)
+        {
+            SQLManager manager = new SQLManager();
+            manager.DeleteMajors(majorId);
+            return RedirectToAction("MajorMessage");
+        }
+        /// <summary>
+        /// 添加教师
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Teacher()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Teacher(Models.WebModels.Teacher[] teachers)
+        {
+            SQLManager manager = new SQLManager();
+            bool flag = manager.AddTeachers(teachers);
+            if (flag)
+                return Content("success");
+            return Content("failure");
+        }
         /// <summary>
         /// 添加课程
         /// </summary>
@@ -41,10 +90,6 @@ namespace ExaminationManagement.Controllers
         {
             SQLManager manager = new SQLManager();
             IEnumerable<Models.DataBaseModels.Course> courses = manager.GetCourses();
-            //Models.DataBaseModels.Course course = new Models.DataBaseModels.Course();
-            //course.CourseName = "sd";
-            //List<Models.DataBaseModels.Course> courses = new List<Models.DataBaseModels.Course>();
-            //courses.Add(course);
             return View(courses);
         }
         public ActionResult CourseDelete(int id)

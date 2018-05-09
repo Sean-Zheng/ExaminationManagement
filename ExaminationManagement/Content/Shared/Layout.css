@@ -24,7 +24,7 @@ body {
     width: 210px;
     height: 100%;
     overflow: hidden;
-    float: left;
+    position:absolute;
     border-right: 1px;
     border-right-style: solid;
     border-color: rgba(194, 194, 194, 0.4);
@@ -136,8 +136,7 @@ ul {
 }
 
 #content {
-    margin-left: 210px;
-    padding: 30px;
+    padding: 30px 30px 30px 240px;
     overflow: auto;
     height: 90%;
 }
