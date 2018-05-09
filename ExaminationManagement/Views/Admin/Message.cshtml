@@ -1,0 +1,55 @@
+﻿@model IEnumerable<ExaminationManagement.Models.DataBaseModels.Course>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section head{
+    @Styles.Render("~/Content/bootstrap-table")
+    @Scripts.Render("~/Scripts/bootstrap-table")
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>
+}
+
+<table data-classes="table" data-toggle="table" data-sort-name="name" data-sort-order="desc">
+    <tr>
+        <th data-field="name" data-sortable="true">课程名称</th>
+        <th data-field="credit" data-sortable="true">学分</th>
+        <th data-field="grade" data-sortable="true">年级</th>
+        <th data-field="teacher" data-sortable="true">教师</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CourseName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Credit)
+            </td>
+            <td>
+                @if (item.Grade != 0)
+                {
+                    @Html.DisplayFor(modelItem => item.Grade)
+                }
+                else
+                {
+                    <span>未分配</span>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Teacher)
+            </td>
+            <td>
+                @Html.ActionLink("修改", "Edit", new { id = item.CourseId }) |
+                @Html.ActionLink("删除", "CourseDelete", new { id = item.CourseId })
+            </td>
+        </tr>
+    }
+
+</table>

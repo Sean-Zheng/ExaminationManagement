@@ -31,7 +31,7 @@ body {
 }
 
 #nav a {
-    text-decoration-line: none;
+    text-decoration:none;
     display: block;
     padding: 15px;
     color: rgb(124, 124, 124);

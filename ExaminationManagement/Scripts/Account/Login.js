@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿$(document).ready(function() {
     $('#login_btn').click(function () {
         if (checkInput() === false)
             return;

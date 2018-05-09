@@ -91,3 +91,12 @@ button {
     margin: auto;
     border-radius: 7px;
 }
+
+#uername_input{
+    width:100%;
+    height:45px;
+    box-sizing:border-box;
+}
+#password_input{
+    width:261px;
+}

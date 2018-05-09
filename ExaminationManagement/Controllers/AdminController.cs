@@ -16,19 +16,42 @@ namespace ExaminationManagement.Controllers
             ViewBag.userName = User.Identity.Name;
             return View();
         }
-        
-        public ActionResult AddMajor()
+        /// <summary>
+        /// 添加课程
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Course()
         {
             return View();
         }
         [HttpPost]
-        public ActionResult AddMajor(Models.WebModels.Course[] courses)
+        public ActionResult Course(Models.WebModels.Course[] courses)
         {
             SQLManager manager = new SQLManager();
             bool flag = manager.AddCourse(courses);
             if (flag)
                 return Content("success");
             return Content("failure");
+        }
+        /// <summary>
+        /// 课程信息
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Message()
+        {
+            SQLManager manager = new SQLManager();
+            IEnumerable<Models.DataBaseModels.Course> courses = manager.GetCourses();
+            //Models.DataBaseModels.Course course = new Models.DataBaseModels.Course();
+            //course.CourseName = "sd";
+            //List<Models.DataBaseModels.Course> courses = new List<Models.DataBaseModels.Course>();
+            //courses.Add(course);
+            return View(courses);
+        }
+        public ActionResult CourseDelete(int id)
+        {
+            SQLManager manager = new SQLManager();
+            manager.DeleteCourse(id);
+            return RedirectToAction("Message");
         }
     }
 }

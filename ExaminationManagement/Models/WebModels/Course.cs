@@ -8,6 +8,6 @@ namespace ExaminationManagement.Models.WebModels
     public class Course
     {
         public string CourseName { get; set; }
-        public float Credit { get; set; }
+        public double Credit { get; set; }
     }
 }

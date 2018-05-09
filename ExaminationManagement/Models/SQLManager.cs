@@ -62,9 +62,11 @@ namespace ExaminationManagement.Models
         }
         public IEnumerable<DataBaseModels.Major> GetMajors()
         {
-            using(SqlCommand command = _connection.CreateCommand())
+            using (SqlCommand command = _connection.CreateCommand())
             {
                 command.CommandText = "select * from tb_major";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
                 SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -76,21 +78,35 @@ namespace ExaminationManagement.Models
                     yield return major;
                 }
                 reader.Close();
+                _connection.Close();
             }
         }
 
+        /// <summary>
+        /// 获取课程信息
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<DataBaseModels.Course> GetCourses()
         {
-            SqlDataAdapter adapter = new SqlDataAdapter("", _connection);
+            string selectCommandText= @"select tb_course.course_id,tb_course.name,tb_course.grade,tb_course.credit,tb_teachinfo.name
+                    from tb_course left join tb_teachinfo 
+                    on tb_course.tea_id = tb_teachinfo.tea_id";
+            SqlDataAdapter adapter = new SqlDataAdapter(selectCommandText, _connection);
             DataTable table = new DataTable();
             adapter.Fill(table);
 
-            foreach (var item in table.Rows)
+            foreach (DataRow item in table.Rows)
             {
                 DataBaseModels.Course course = new DataBaseModels.Course
                 {
-
+                    CourseId = item.Field<int>(0),
+                    CourseName = item.Field<string>(1),
+                    Grade = item.Field<int?>(2) ?? 0,
+                    Credit = item.Field<double>(3),
+                    Teacher = item.Field<string>(4)
                 };
+                if (course.Teacher == null)
+                    course.Teacher = "未分配";
                 yield return course;
             }
         }
@@ -130,11 +146,6 @@ namespace ExaminationManagement.Models
         #endregion
 
         #region
-        //
-        public void AddTeacher(DataBaseModels.TeachInfo info)
-        {
-            SqlDataAdapter adapter = new SqlDataAdapter("", _connection);
-        }
         /// <summary>
         /// 添加课程
         /// </summary>
@@ -156,6 +167,22 @@ namespace ExaminationManagement.Models
             }
 
             return adapter.Update(table) > 0 ? true : false;
+        }
+        public bool DeleteCourse(int courseId)
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "delete tb_course where course_id=@Id";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                SqlParameter parameter = new SqlParameter("@Id", courseId);
+                command.Parameters.Add(parameter);
+                int changeNumber = command.ExecuteNonQuery();
+                _connection.Close();
+                if (changeNumber > 0)
+                    return true;
+                return false;
+            }
         }
         #endregion
 
