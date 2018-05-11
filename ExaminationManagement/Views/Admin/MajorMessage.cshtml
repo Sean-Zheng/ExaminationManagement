@@ -9,18 +9,28 @@
     <script>
         $(document).ready(function () {
             $('#tb_majors').bootstrapTable({
-                sortName: 'MajorId',
+                sortName: 'MajorName',
                 striped: true,
                 search: true,
                 columns: [
                     {
                         field: 'MajorId',
+                        visible: false
                     },
                     {
                         field: 'MajorName',
                         sortable: true,
                         editable: {
                             type: 'text'
+                        }
+                    },
+                    {
+                        field: 'Credit',
+                        sortable: true,
+                        editable: {
+                            type: 'number',
+                            min: 0,
+                            step: 1
                         }
                     }
                 ],
@@ -29,9 +39,12 @@
                         url: '/Admin/EditMajor',
                         data: {
                             majorId: row.MajorId,
-                            majorName: row.MajorName
+                            major: {
+                                MajorName: row.MajorName,
+                                Credit: row.Credit
+                            }
                         },
-                        type:'post'
+                        type: 'post'
                     });
                 }
             });
@@ -42,8 +55,9 @@
 <table id="tb_majors">
     <thead>
         <tr>
-            <th>专业号</th>
+            <th></th>
             <th>专业名称</th>
+            <th>学分要求</th>
             <th></th>
         </tr>
     </thead>
@@ -51,9 +65,10 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.Major_id)</td>
+                <td>@Html.DisplayFor(modelItem => item.MajorId)</td>
                 <td>@Html.DisplayFor(modelItem => item.MajorName)</td>
-                <td>@Html.ActionLink("删除", "DeleteMajor", new { majorId = item.Major_id },new { @class="btn btn-link"})</td>
+                <td>@Html.DisplayFor(modelItem => item.Credit)</td>
+                <td>@Html.ActionLink("删除", "DeleteMajor", new { majorId = item.MajorId }, new { @class = "btn btn-link" })</td>
             </tr>
         }
     </tbody>

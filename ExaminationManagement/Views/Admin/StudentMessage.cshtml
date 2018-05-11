@@ -1,0 +1,337 @@
+﻿@model IEnumerable<ExaminationManagement.Models.DataBaseModels.StuInfo>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section head{
+    @Styles.Render("~/Content/bootstrap-table")
+    @Scripts.Render("~/Scripts/bootstrap-table")
+    <style>
+        #addTab {
+            width: 600px;
+            height: 450px;
+            box-shadow: 0 0 5px rgba(128, 128, 128,0.5);
+            border-radius: 15px;
+            margin: auto;
+            padding: 15px 0;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            color: rgb(255, 255, 255);
+            background-color: rgb(36,36,36);
+            display: none;
+        }
+        input[type=number] {
+            width: 90px !important;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $('#file_btn').click(function () {
+                $('#file_input').click();
+            });
+            $('#file_input').change(function () {
+                $('#file_name').text($('#file_input').val());
+            });
+            $.get('/Admin/MajorList', function (data) {
+                $.each(data, function (index, item) {
+                    var element = '<li><a href="/Admin/StudentMessageWith/' + item.value + '">' + item.text + '</a></li>';
+                    $('.dropdown-menu').append(element);
+                    $('#stu_major').append('<option value="' + item.value + '">' + item.text + '</option>');
+                });
+            });
+            var majors;
+            $.ajax({
+                url: '/Admin/MajorList',
+                type: 'get',
+                async: false,
+                success: function (data) {
+                    majors = data;
+                }
+            });
+            $('#file_upload').click(function () {
+                var file = $('#file_input').prop('files');
+                if (file.length == 0)
+                    alert('请选择文件');
+                else {
+                    var formdata = new FormData();
+                    formdata.append('file', file[0]);
+                    $.ajax({
+                        url: '/Admin/UploadInformation',
+                        processData: false,
+                        contentType: false,
+                        type: 'post',
+                        data: formdata,
+                        success: function (result) {
+                            if (result.exists == false)
+                                alert('文件上传失败');
+                            else if (result.legal == false)
+                                alert('文件不合法');
+                            else if (result.success == true) {
+                                location.reload();
+                            }
+                            else
+                                alert('添加失败');
+                        }
+                    });
+                }
+            });
+            $('#tb_student').bootstrapTable({
+                sortName: 'StuId',
+                pagination: true,
+                toolbar: '#toolbar',
+                striped: true,
+                search: true,
+                showRefresh: true,
+                showColumns: true,
+                clickToSelect: true,
+                showPaginationSwitch: true,
+                onRefresh: function () {
+                    location.reload();
+                },
+                columns: [
+                    {
+                        checkbox: true
+                    },
+                    {
+                        field: 'StuId',
+                        sortable: true,
+                        editable: {
+                            validate: function (v) {
+                                if (v == '')
+                                    return '输入不能为空';
+                            }
+                        }
+                    },
+                    {
+                        field: 'StuName',
+                        sortable: true,
+                        editable: {
+                            validate: function (v) {
+                                if (v == '')
+                                    return '输入不能为空';
+                            }
+                        }
+                    },
+                    {
+                        field: 'StuSex',
+                        sortable: true,
+                        editable: {
+                            type: 'select',
+                            title: '选择性别',
+                            source: [
+                                {
+                                    value: 'Unknow',
+                                    text: '未知'
+                                },
+                                {
+                                    value: 'Male',
+                                    text: '男'
+                                },
+                                {
+                                    value: 'Female',
+                                    text: '女'
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        field: 'StuMajor',
+                        sortable: true,
+                        editable: {
+                            type: 'select',
+                            title: '选择专业',
+                            source: majors
+                        }
+                    },
+                    {
+                        field: 'EnrollYear',
+                        sortable: true,
+                        editable: {
+                            type: 'number',
+                            step: 1
+                        }
+                    },
+                    {
+                        field: 'ClassNumber',
+                        sortable: true,
+                        editable: {
+                            type: 'number',
+                            step: 1,
+                            min: 1,
+
+                        }
+                    }
+                ],
+                onEditableSave: function (field, row, oldValue, $el) {
+                    var student = {};
+                    var oldStuId;
+                    if (field == 'StuId') {
+                        oldStuId = oldValue;
+                        student.StuId = row.StuId;
+                        student.Name = row.StuName;
+                        student.MajorId = row.StuMajor;
+                        student.EnrollYear = row.EnrollYear;
+                        student.ClassNumber = row.ClassNumber;
+                        student.Gender = row.StuSex;
+                    }
+                    else {
+                        oldStuId = row.StuId;
+                        student.StuId = row.StuId;
+                        student.Name = row.StuName;
+                        student.MajorId = row.StuMajor;
+                        student.EnrollYear = row.EnrollYear;
+                        student.ClassNumber = row.ClassNumber;
+                        student.Gender = row.StuSex;
+                    }
+                    $.ajax({
+                        url: '/Admin/EditStudent',
+                        data: {
+                            oleStuId: oldStuId,
+                            student: student
+                        },
+                        type: 'post'
+                    });
+                }
+            });
+
+            $('#delete').click(function () {
+                var arr = $('#tb_student').bootstrapTable('getSelections');
+                if (arr.length == 0)
+                    return;
+                var removeArr = [];
+                $.each(arr, function (index, item) {
+                    removeArr.push(item.StuId)
+                });
+                $('#tb_student').bootstrapTable('remove', {
+                    field: 'StuId',
+                    values: removeArr
+                });
+                $.ajax({
+                    url: '/Admin/DeleteStudents',
+                    type: 'post',
+                    data: {
+                        ids: removeArr
+                    }
+                });
+            });
+            $('#add').click(function () {
+                $('#addTab').fadeIn();
+            });
+            $('#submit_add').click(function () {
+                var student = new FormData($('#addForm')[0]);
+                for (var value of student.values()) {
+                    if (value == '') {
+                        alert('请将信息补充完整');
+                        return;
+                    }
+                }
+                $.ajax({
+                    url: '/Admin/InsertStudent',
+                    type: 'post',
+                    data: student,
+                    processData: false,
+                    contentType: false,
+                    success: function () {
+                        location.reload();
+                    }
+                });
+                $('#addTab').fadeOut();
+            });
+            $('#submit_cancel').click(function () {
+                $('#addTab').fadeOut();
+            });
+        });
+    </script>
+}
+<div id="toolbar" class="btn-group" role="group">
+    <button id="add" type="button" class="btn btn-default">新增</button>
+    <button id="delete" type="button" class="btn btn-default">删除</button>
+
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            选择专业
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="/Admin/StudentMessage">所有专业</a></li>
+        </ul>
+    </div>
+</div>
+
+<div style="margin:0 auto; width:320px;display:flex;justify-content:space-between;">
+    @Html.ActionLink("下载学生信息模板", "DownLoadInformation", null, new { @class = "btn btn-info" })
+    <button type="button" id="file_btn" class="btn btn-primary">选择学生信息文件</button>
+</div>
+<div style="margin:10px auto;width:320px;display:flex;flex-direction:column;align-items:center;">
+    <p id="file_name">未选择任何文件</p>
+    <button type="button" id="file_upload" class="btn btn-success">上传</button>
+    <input style="display:none;" type="file" id="file_input" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+</div>
+<table id="tb_student">
+    <thead>
+        <tr>
+            <th></th>
+            <th>学号</th>
+            <th>姓名</th>
+            <th>性别</th>
+            <th>专业</th>
+            <th>入学年份</th>
+            <th>班级</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td></td>
+                <td>@Html.DisplayFor(modelItem => item.Stu_id)</td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Sex)</td>
+                <td>@Html.DisplayFor(modelItem => item.Major_id)</td>
+                <td>@Html.DisplayFor(modelItem => item.Enroll_year)</td>
+                <td>@Html.DisplayFor(modelItem => item.ClassNumer)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="addTab">
+    <form style="width:450px;margin:0 auto;" id="addForm">
+        <div class="form-group">
+            <label for="stu_number">学号</label>
+            <input type="text" class="form-control" id="stu_number" name="StuId" placeholder="学号">
+        </div>
+        <div class="form-group">
+            <label for="stu_name">姓名</label>
+            <input type="text" class="form-control" id="stu_name" name="Name" placeholder="姓名">
+        </div>
+        <div class="form-group">
+            <label for="stu_sex">性别</label>
+            <select id="stu_sex" name="Gender" class="form-control" style="margin:0 auto;width:150px;">
+                <option value="Unknow">未知</option>
+                <option value="Male">男</option>
+                <option value="Female">女</option>
+            </select>
+            <label for="stu_major">专业</label>
+            <select id="stu_major" name="MajorId" class="form-control" style="margin:0 auto;width:200px;"></select>
+        </div>
+        <div class="form-group form-inline" style="display:flex;justify-content:space-around;margin-top:30px;">
+            <div class="form-group form-inline">
+                <label for="stu_enter">入学年份</label>
+                <input type="number" class="form-control" id="stu_enter" name="EnrollYear" value="2000" min="1800" step="1">
+            </div>
+            <div class="form-group form-inline">
+                <label for="stu_class">班级</label>
+                <input type="number" class="form-control" id="stu_class" name="ClassNumber" min="1" step="1" value="1" placeholder="班级">
+            </div>
+        </div>
+        <div style="margin:30px auto;width:150px;display:flex;justify-content:space-between;">
+            <button id="submit_add" type="button" class="btn btn-primary">确定</button>
+            <button id="submit_cancel" type="button" class="btn btn-default">取消</button>
+        </div>
+    </form>
+</div>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExaminationManagement.Models.ExcelModels;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -25,7 +26,8 @@ namespace ExaminationManagement.Models
             string connectionString = ConfigurationManager.ConnectionStrings["ExamDb"].ConnectionString;
             this._connection = new SqlConnection(connectionString);
         }
-        #region  select
+
+        #region 登录
         /// <summary>
         /// 登录验证
         /// </summary>
@@ -59,11 +61,35 @@ namespace ExaminationManagement.Models
                 }
             }
         }
+        #endregion
+
+        #region  专业
         /// <summary>
         /// 获取专业列表
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<DataBaseModels.Major> GetMajors()
+        public IEnumerable<SelectOptions> GetMajors()
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "select * from tb_major";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    SelectOptions options = new SelectOptions
+                    {
+                        value = reader.GetInt32(0).ToString(),
+                        text = reader.GetString(1)
+                    };
+                    yield return options;
+                }
+                reader.Close();
+                _connection.Close();
+            }
+        }
+        public IEnumerable<DataBaseModels.Major> GetMajorList()
         {
             using (SqlCommand command = _connection.CreateCommand())
             {
@@ -75,8 +101,9 @@ namespace ExaminationManagement.Models
                 {
                     DataBaseModels.Major major = new DataBaseModels.Major
                     {
-                        Major_id = reader.GetInt32(0),
-                        MajorName = reader.GetString(1)
+                        MajorId = reader.GetInt32(0),
+                        MajorName = reader.GetString(1),
+                        Credit = reader.GetDouble(2)
                     };
                     yield return major;
                 }
@@ -84,7 +111,98 @@ namespace ExaminationManagement.Models
                 _connection.Close();
             }
         }
+        /// <summary>
+        /// 添加专业
+        /// </summary>
+        /// <param name="majors"></param>
+        /// <returns></returns>
+        public bool AddMajors(WebModels.Major[] majors)
+        {
+            SqlDataAdapter adapter = new SqlDataAdapter("select * from tb_major", _connection);
+            new SqlCommandBuilder(adapter);
+            DataTable table = new DataTable();
+            adapter.Fill(table);
 
+            foreach (var item in majors)
+            {
+                DataRow row = table.NewRow();
+                row[1] = item.MajorName;
+                row[2] = item.Credit;
+                table.Rows.Add(row);
+            }
+            return adapter.Update(table) > 0 ? true : false;
+        }
+        /// <summary>
+        /// 修改专业
+        /// </summary>
+        /// <param name="majorId"></param>
+        /// <param name="majorName"></param>
+        /// <returns></returns>
+        public bool UpdateMajors(int majorId, WebModels.Major major)
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "update tb_major set name=@majorName,credit_need=@credit where major_id=@majorId";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                command.Parameters.AddWithValue("@majorName", major.MajorName);
+                command.Parameters.AddWithValue("@credit", major.Credit);
+                command.Parameters.AddWithValue("@majorId", majorId);
+                int changeNumber = command.ExecuteNonQuery();
+                _connection.Close();
+                if (changeNumber > 0)
+                    return true;
+                return false;
+            }
+        }
+        /// <summary>
+        /// 删除专业
+        /// </summary>
+        /// <param name="majorId"></param>
+        /// <returns></returns>
+        public bool DeleteMajors(int majorId)
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "delete from tb_major where major_id=@Id";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                SqlParameter parameter = new SqlParameter("@Id", majorId);
+                command.Parameters.Add(parameter);
+                try
+                {
+                    int changeNumber = command.ExecuteNonQuery();
+                    if (changeNumber > 0)
+                        return true;
+                    return false;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+                finally
+                {
+                    _connection.Close();
+                }
+            }
+        }
+        public bool CheckMajorExist(string[] majorName)
+        {
+            SqlDataAdapter adapter = new SqlDataAdapter("select * from tb_major", _connection);
+            DataTable table = new DataTable();
+            adapter.Fill(table);
+
+            foreach (var item in majorName)
+            {
+                DataRow[] rows = table.Select($"name='{item}'");
+                if (rows.Length == 0)
+                    return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region 课程
         /// <summary>
         /// 获取课程信息
         /// </summary>
@@ -106,15 +224,94 @@ namespace ExaminationManagement.Models
                     CourseName = item.Field<string>(1),
                     Grade = item.Field<int?>(2),
                     Credit = item.Field<double>(3),
-                    Teacher = item.Field<int?>(4)
+                    Teacher = item.Field<string>(4)
                 };
                 yield return course;
             }
         }
-        //
-        public Dictionary<int,string> GetTeachers()
+        /// <summary>
+        /// 添加课程
+        /// </summary>
+        /// <param name="courses">课程:课程名称和学分</param>
+        /// <returns></returns>
+        public bool AddCourse(WebModels.Course[] courses)
         {
-            Dictionary<int, string> keyValuePairs = new Dictionary<int, string>();
+            SqlDataAdapter adapter = new SqlDataAdapter("select * from tb_course", _connection);
+            SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+            DataTable table = new DataTable();
+            adapter.Fill(table);
+
+            foreach (var item in courses)
+            {
+                DataRow row = table.NewRow();
+                row[1] = item.CourseName;
+                row[3] = item.Credit;
+                table.Rows.Add(row);
+            }
+
+            return adapter.Update(table) > 0 ? true : false;
+        }
+        /// <summary>
+        /// 删除课程
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <returns></returns>
+        public bool DeleteCourse(int courseId)
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "delete from tb_course where course_id=@Id";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                SqlParameter parameter = new SqlParameter("@Id", courseId);
+                command.Parameters.Add(parameter);
+                int changeNumber = command.ExecuteNonQuery();
+                _connection.Close();
+                if (changeNumber > 0)
+                    return true;
+                return false;
+            }
+        }
+        public bool UpdateCourse(DataBaseModels.Course course)
+        {
+            SqlDataAdapter adapter = new SqlDataAdapter("select * from tb_course", _connection);
+            DataTable table = new DataTable();
+            adapter.Fill(table);
+            new SqlCommandBuilder(adapter);
+
+            DataRow[] rows = table.Select($"course_id={course.CourseId}");
+            if (rows.Length == 0)
+                return false;
+            DataRow row = rows[0];
+            row.SetField(1, course.CourseName);
+            row.SetField(2, course.Grade);
+            row.SetField(3, course.Credit);
+            row.SetField(4, course.Teacher);
+
+            return adapter.Update(table) > 0 ? true : false;
+        }
+        #endregion
+
+        #region 教师
+        public string SelectTeacherName(string Id)
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "select name from tb_teachinfo where tea_id=@ID";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                command.Parameters.AddWithValue("@ID", Id);
+                string name = command.ExecuteScalar().ToString();
+                _connection.Close();
+                return name;
+            }
+        }
+        /// <summary>
+        /// 获取教师映射表
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<SelectOptions> GetTeachers()
+        {
             using (SqlCommand command = _connection.CreateCommand())
             {
                 command.CommandText = "select distinct tea_id,name from tb_teachinfo";
@@ -123,14 +320,147 @@ namespace ExaminationManagement.Models
                 SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    int value = reader.GetInt32(0);
-                    string text = reader.GetString(1);
-                    keyValuePairs.Add(value, text);
+                    SelectOptions options = new SelectOptions
+                    {
+                        value = reader.GetString(0),
+                        text = reader.GetString(1)
+                    };
+                    yield return options;
                 }
                 reader.Close();
                 _connection.Close();
             }
-            return keyValuePairs;
+        }
+        /// <summary>
+        /// 获取教师信息列表
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<DataBaseModels.TeachInfo> GetTeachInfoList()
+        {
+            SqlDataAdapter adapter = new SqlDataAdapter("select * from tb_teachinfo", _connection);
+            DataTable table = new DataTable();
+            adapter.Fill(table);
+
+            foreach (DataRow item in table.Rows)
+            {
+                DataBaseModels.TeachInfo teachInfo = new DataBaseModels.TeachInfo
+                {
+                    Tea_id = item.Field<string>(0),
+                    Name = item.Field<string>(1),
+                    Major_id = item.Field<int>(6)
+                };
+                yield return teachInfo;
+            }
+        }
+        /// <summary>
+        /// 添加教师
+        /// </summary>
+        /// <param name="teachers"></param>
+        /// <returns></returns>
+        public bool AddTeachers(WebModels.Teacher[] teachers)
+        {
+            SqlDataAdapter teacher_adapter = new SqlDataAdapter("select * from tb_teachinfo", _connection);
+            SqlDataAdapter user_adapter = new SqlDataAdapter("select * from tb_users", _connection);
+            SqlCommandBuilder teacher_builder = new SqlCommandBuilder(teacher_adapter);
+            SqlCommandBuilder user_builder = new SqlCommandBuilder(user_adapter);
+            DataTable tb_teachers = new DataTable();
+            DataTable tb_users = new DataTable();
+            teacher_adapter.Fill(tb_teachers);
+            user_adapter.Fill(tb_users);
+
+            foreach (var item in teachers)
+            {
+                DataRow tea = tb_teachers.NewRow();
+                DataRow user = tb_users.NewRow();
+                tea[0] = item.Tea_id;
+                tea[1] = item.TeaName;
+                tea[6] = item.MajorId;
+
+                user[0] = item.Tea_id;
+                user[1] = Encryption(item.Passwd);
+                user[2] = 1;
+
+                tb_teachers.Rows.Add(tea);
+                tb_users.Rows.Add(user);
+            }
+
+            int t = teacher_adapter.Update(tb_teachers);
+            int u = user_adapter.Update(tb_users);
+            if (t > 0 && u > 0)
+                return true;
+            return false;
+        }
+        /// <summary>
+        /// 删除教师
+        /// </summary>
+        /// <param name="teaId"></param>
+        /// <returns></returns>
+        public bool DeleteTacher(string teaId)
+        {
+            bool success = this.DeleteUser(teaId);
+            if (!success)
+                return false;
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "delete from tb_teachinfo where tea_id=@Id";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                SqlParameter parameter = new SqlParameter("@Id", teaId);
+                command.Parameters.Add(parameter);
+                int changeNumber = command.ExecuteNonQuery();
+                _connection.Close();
+                if (success && changeNumber > 0)
+                    return true;
+                return false;
+            }
+        }
+        /// <summary>
+        /// 更新教师信息
+        /// </summary>
+        /// <param name="oldTeachId"></param>
+        /// <param name="teacher"></param>
+        /// <returns></returns>
+        public bool UpdateTeacher(string oldTeachId,WebModels.Teacher teacher)
+        {
+            bool success = this.UpdateUser(oldTeachId, teacher.Tea_id);
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "update tb_teachinfo set" +
+                    " tea_id=@newId,name=@teaName,major_id=@majorId " +
+                    "where tea_id=@oldTeachId";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                command.Parameters.AddWithValue("@newId", teacher.Tea_id);
+                command.Parameters.AddWithValue("@teaName", teacher.TeaName);
+                command.Parameters.AddWithValue("@majorId", teacher.MajorId);
+                command.Parameters.AddWithValue("@oldTeachId", oldTeachId);
+                int changeNumber = command.ExecuteNonQuery();
+                _connection.Close();
+                if (success && changeNumber > 0)
+                    return true;
+                return false;
+            }
+        }
+        #endregion
+
+        #region 学生
+        /// <summary>
+        /// 获取学生姓名
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public string SelectStudentName(string Id)
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "select name from tb_stuinfo where stu_id=@ID";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                command.Parameters.AddWithValue("@ID", Id);
+                string name = command.ExecuteScalar().ToString();
+                _connection.Close();
+                return name;
+            }
         }
         //未验证
         public DataBaseModels.StuInfo GetStuInfo(string studentId)
@@ -165,137 +495,338 @@ namespace ExaminationManagement.Models
                 return info;
             }
         }
-        #endregion
-
-        #region
         /// <summary>
-        /// 添加专业
+        /// 获取所有学生
         /// </summary>
-        /// <param name="majors"></param>
         /// <returns></returns>
-        public bool AddMajors(string[] majors)
+        public IEnumerable<DataBaseModels.StuInfo> GetStudents()
         {
-            SqlDataAdapter adapter = new SqlDataAdapter("select * from tb_major", _connection);
-            new SqlCommandBuilder(adapter);
+            SqlDataAdapter adapter = new SqlDataAdapter("select stu_id,name,major_id,enroll_year,class_number,gender from tb_stuinfo", _connection);
             DataTable table = new DataTable();
             adapter.Fill(table);
 
-            foreach (var item in majors)
+            foreach (DataRow item in table.Rows)
             {
-                DataRow row = table.NewRow();
-                row[1] = item;
-                table.Rows.Add(row);
-            }
-            return adapter.Update(table) > 0 ? true : false;
-        }
-        public bool UpdateMajors(int majorId,string majorName)
-        {
-            using (SqlCommand command = _connection.CreateCommand())
-            {
-                command.CommandText = "update tb_major set name=@majorName where major_id=@majorId";
-                if (_connection.State == ConnectionState.Closed)
-                    _connection.Open();
-                command.Parameters.AddWithValue("@majorName", majorName);
-                command.Parameters.AddWithValue("@majorId", majorId);
-                int changeNumber = command.ExecuteNonQuery();
-                _connection.Close();
-                if (changeNumber > 0)
-                    return true;
-                return false;
-            }
-        }
-        public bool DeleteMajors(int majorId)
-        {
-            using (SqlCommand command = _connection.CreateCommand())
-            {
-                command.CommandText = "delete from tb_major where major_id=@Id";
-                if (_connection.State == ConnectionState.Closed)
-                    _connection.Open();
-                SqlParameter parameter = new SqlParameter("@Id", majorId);
-                command.Parameters.Add(parameter);
-                int changeNumber = command.ExecuteNonQuery();
-                _connection.Close();
-                if (changeNumber > 0)
-                    return true;
-                return false;
+                DataBaseModels.StuInfo info = new DataBaseModels.StuInfo
+                {
+                    Stu_id = item.Field<string>(0),
+                    Name = item.Field<string>(1),
+                    Major_id = item.Field<int>(2),
+                    Enroll_year = item.Field<int>(3),
+                    ClassNumer = item.Field<int>(4)
+                };
+                Gender gender = (Gender)item.Field<int>(5);
+                switch (gender)
+                {
+                    case Gender.Unknow:
+                        break;
+                    case Gender.Male:
+                        info.Sex = Gender.Male;
+                        break;
+                    case Gender.Female:
+                        info.Sex = Gender.Female;
+                        break;
+                    default:
+                        break;
+                }
+                yield return info;
             }
         }
         /// <summary>
-        /// 添加课程
+        /// 获取专业学生
         /// </summary>
-        /// <param name="courses">课程:课程名称和学分</param>
+        /// <param name="majorId"></param>
         /// <returns></returns>
-        public bool AddCourse(WebModels.Course[] courses)
+        public IEnumerable<DataBaseModels.StuInfo> GetStudents(int majorId)
         {
-            SqlDataAdapter adapter = new SqlDataAdapter("select * from tb_course", _connection);
-            SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+            string selectCommandText = $"select stu_id,name,major_id,enroll_year,class_number,gender from tb_stuinfo where major_id={majorId}";
+            SqlDataAdapter adapter = new SqlDataAdapter(selectCommandText, _connection);
             DataTable table = new DataTable();
             adapter.Fill(table);
 
-            foreach (var item in courses)
+            foreach (DataRow item in table.Rows)
             {
-                DataRow row = table.NewRow();
-                row[1] = item.CourseName;
-                row[3] = item.Credit;
-                table.Rows.Add(row);
+                DataBaseModels.StuInfo info = new DataBaseModels.StuInfo
+                {
+                    Stu_id = item.Field<string>(0),
+                    Name = item.Field<string>(1),
+                    Major_id = item.Field<int>(2),
+                    Enroll_year = item.Field<int>(3),
+                    ClassNumer = item.Field<int>(4)
+                };
+                Gender gender = (Gender)item.Field<int>(5);
+                switch (gender)
+                {
+                    case Gender.Unknow:
+                        break;
+                    case Gender.Male:
+                        info.Sex = Gender.Male;
+                        break;
+                    case Gender.Female:
+                        info.Sex = Gender.Female;
+                        break;
+                    default:
+                        break;
+                }
+                yield return info;
             }
-
-            return adapter.Update(table) > 0 ? true : false;
         }
-        public bool DeleteCourse(int courseId)
+        /*
+        public IEnumerable<DataBaseModels.StuInfo> GetStudents(string teacherId)
         {
+            string selectCommandText = $"select stu_id,name,major_id,enroll_year,class_number,gender from tb_stuinfo where major_id={majorId}";
+            SqlDataAdapter adapter = new SqlDataAdapter(selectCommandText, _connection);
+            DataTable table = new DataTable();
+            adapter.Fill(table);
+
+            foreach (DataRow item in table.Rows)
+            {
+                DataBaseModels.StuInfo info = new DataBaseModels.StuInfo
+                {
+                    Stu_id = item.Field<string>(0),
+                    Name = item.Field<string>(1),
+                    Major_id = item.Field<int>(2),
+                    Enroll_year = item.Field<int>(3),
+                    ClassNumer = item.Field<int>(4)
+                };
+                Gender gender = (Gender)item.Field<int>(5);
+                switch (gender)
+                {
+                    case Gender.Unknow:
+                        break;
+                    case Gender.Male:
+                        info.Sex = Gender.Male;
+                        break;
+                    case Gender.Female:
+                        info.Sex = Gender.Female;
+                        break;
+                    default:
+                        break;
+                }
+                yield return info;
+            }
+        }
+        */
+
+        /// <summary>
+        /// 更新学生信息
+        /// </summary>
+        /// <param name="oldStuId"></param>
+        /// <param name="student"></param>
+        /// <returns></returns>
+        public bool UpdateStudent(string oldStuId, WebModels.Student student)
+        {
+            bool success = this.UpdateUser(oldStuId, student.StuId);
             using (SqlCommand command = _connection.CreateCommand())
             {
-                command.CommandText = "delete tb_course where course_id=@Id";
+                command.CommandText = "update tb_stuinfo set" +
+                    " stu_id=@newId,name=@stuName,major_id=@majorId,enroll_year=@enter,class_number=@class,gender=@sex " +
+                    "where stu_id=@oldStuId";
                 if (_connection.State == ConnectionState.Closed)
                     _connection.Open();
-                SqlParameter parameter = new SqlParameter("@Id", courseId);
-                command.Parameters.Add(parameter);
+                command.Parameters.AddWithValue("@newId", student.StuId);
+                command.Parameters.AddWithValue("@stuName", student.Name);
+                command.Parameters.AddWithValue("@majorId", student.MajorId);
+                command.Parameters.AddWithValue("@enter", student.EnrollYear);
+                command.Parameters.AddWithValue("@class", student.ClassNumber);
+                command.Parameters.AddWithValue("@sex", (int)student.Gender);
+                command.Parameters.AddWithValue("@oldStuId", oldStuId);
                 int changeNumber = command.ExecuteNonQuery();
                 _connection.Close();
-                if (changeNumber > 0)
+                if (success && changeNumber > 0)
                     return true;
                 return false;
             }
         }
-
-        public bool AddTeachers(WebModels.Teacher[] teachers)
+        public bool DeleteStudent(string stuId)
         {
-            SqlDataAdapter teacher_adapter = new SqlDataAdapter("select * from tb_teachinfo", _connection);
+            bool success = this.DeleteUser(stuId);
+            if (!success)
+                return false;
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "delete from tb_stuinfo where stu_id==@Id";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                SqlParameter parameter = new SqlParameter("@Id", stuId);
+                command.Parameters.Add(parameter);
+                int changeNumber = command.ExecuteNonQuery();
+                _connection.Close();
+                if (success && changeNumber > 0)
+                    return true;
+                return false;
+            }
+        }
+        public void DeleteStudents(string[] stuIds)
+        {
+            SqlDataAdapter sda_user = new SqlDataAdapter("select * from tb_users", _connection);
+            SqlDataAdapter sda_stu = new SqlDataAdapter("select * from tb_stuinfo", _connection);
+
+            DataTable tb_user = new DataTable();
+            DataTable tb_stu = new DataTable();
+
+            sda_user.Fill(tb_user);
+            sda_stu.Fill(tb_stu);
+
+            foreach (var item in stuIds)
+            {
+                DataRow[] user_row = tb_user.Select($"id='{item}'");
+                DataRow[] stu_row = tb_stu.Select($"stu_id='{item}'");
+
+                user_row[0].Delete();
+                stu_row[0].Delete();
+            }
+
+            new SqlCommandBuilder(sda_user);
+            new SqlCommandBuilder(sda_stu);
+
+            sda_user.Update(tb_user);
+            sda_stu.Update(tb_stu);
+        }
+        /// <summary>
+        /// 添加学生
+        /// </summary>
+        /// <param name="informations"></param>
+        /// <returns></returns>
+        public bool AddStudents(IEnumerable<Information> informations)
+        {
+            SqlDataAdapter stu_adapter = new SqlDataAdapter("select stu_id,name,enroll_year,gender,major_id,class_number,credit_got from tb_stuinfo", _connection);
+            SqlDataAdapter major_adapter = new SqlDataAdapter("select * from tb_major", _connection);
             SqlDataAdapter user_adapter = new SqlDataAdapter("select * from tb_users", _connection);
-            SqlCommandBuilder teacher_builder = new SqlCommandBuilder(teacher_adapter);
-            SqlCommandBuilder user_builder = new SqlCommandBuilder(user_adapter);
-            DataTable tb_teachers = new DataTable();
-            DataTable tb_users = new DataTable();
-            teacher_adapter.Fill(tb_teachers);
-            user_adapter.Fill(tb_users);
+            
+            DataTable tb_stu = new DataTable();
+            DataTable tb_major = new DataTable();
+            DataTable tb_user = new DataTable();
+            stu_adapter.Fill(tb_stu);
+            major_adapter.Fill(tb_major);
+            user_adapter.Fill(tb_user);
+            string pwd = Encryption("123456");
 
-            foreach (var item in teachers)
+            foreach (var item in informations)
             {
-                DataRow tea = tb_teachers.NewRow();
-                DataRow user = tb_users.NewRow();
-                tea[0] = item.Tea_id;
-                tea[1] = item.TeaName;
-                tea[6] = item.MajorId;
+                DataRow row = tb_stu.NewRow();
+                row[0] = item.StudentId;
+                row[1] = item.Name;
+                row[2] = item.EnrollmentYear;
+                row[3] = (int)item.Sex;
+                DataRow[] rows = tb_major.Select($"name='{item.Major}'");
+                if (rows.Length == 0)
+                    continue;
+                row[4] = rows[0][0];
+                row[5] = item.ClassNumber;
+                row[6] = 0;
 
-                user[0] = item.Tea_id;
-                user[1] = Encryption(item.Passwd);
-                user[2] = 1;
+                DataRow urow = tb_user.NewRow();
+                urow[0] = item.StudentId;
+                urow[1] = pwd;
+                urow[2] = 2;
 
-                tb_teachers.Rows.Add(tea);
-                tb_users.Rows.Add(user);
+                tb_stu.Rows.Add(row);
+                tb_user.Rows.Add(urow);
             }
 
-            int t = teacher_adapter.Update(tb_teachers);
-            int u = user_adapter.Update(tb_users);
-            if (t > 0 && u > 0)
+            new SqlCommandBuilder(stu_adapter);
+            new SqlCommandBuilder(user_adapter);
+            int num_stu = stu_adapter.Update(tb_stu);
+            int num_user = user_adapter.Update(tb_user);
+            if (num_stu > 0 && num_user > 0)
                 return true;
             return false;
         }
+        /// <summary>
+        /// 添加单个学生
+        /// </summary>
+        /// <param name="student"></param>
+        public void AddStudent(WebModels.Student student)
+        {
+            SqlDataAdapter sda_stu = new SqlDataAdapter("select stu_id,name,enroll_year,gender,major_id,class_number,credit_got from tb_stuinfo", _connection);
+            SqlDataAdapter sda_user = new SqlDataAdapter("select * from tb_users", _connection);
+
+            DataTable tb_stu = new DataTable();
+            DataTable tb_user = new DataTable();
+
+            sda_stu.Fill(tb_stu);
+            sda_user.Fill(tb_user);
+
+            DataRow row_stu = tb_stu.NewRow();
+            DataRow row_user = tb_user.NewRow();
+
+            row_stu[0] = student.StuId;
+            row_stu[1] = student.Name;
+            row_stu[2] = student.EnrollYear;
+            row_stu[3] = (int)student.Gender;
+            row_stu[4] = student.MajorId;
+            row_stu[5] = student.ClassNumber;
+            row_stu[6] = 0;
+
+            row_user[0] = student.StuId;
+            row_user[1] = Encryption("123456");
+            row_user[2] = 2;
+
+            tb_stu.Rows.Add(row_stu);
+            tb_user.Rows.Add(row_user);
+
+            new SqlCommandBuilder(sda_stu);
+            new SqlCommandBuilder(sda_user);
+
+            sda_stu.Update(tb_stu);
+            sda_user.Update(tb_user);
+        }
+
+        public IEnumerable<object> GetYearList()
+        {
+            using (SqlCommand command=_connection.CreateCommand())
+            {
+                command.CommandText = "select distinct enroll_year from tb_stuinfo";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    int year = reader.GetInt32(0);
+                    yield return new { text = year, value = year.ToString() };
+                }
+                reader.Close();
+                _connection.Close();
+            }
+        }
         #endregion
 
+        #region 用户
 
-
+        public bool DeleteUser(string Id)
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "delete from tb_users where id=@Id";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                SqlParameter parameter = new SqlParameter("@Id", Id);
+                command.Parameters.Add(parameter);
+                int changeNumber = command.ExecuteNonQuery();
+                _connection.Close();
+                if (changeNumber > 0)
+                    return true;
+                return false;
+            }
+        }
+        public bool UpdateUser(string oldId,string newId)
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "update tb_users set id=@newId where id=@oldId";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                command.Parameters.AddWithValue("@newId", newId);
+                command.Parameters.AddWithValue("@oldId", oldId);
+                int changeNumber = command.ExecuteNonQuery();
+                _connection.Close();
+                if (changeNumber > 0)
+                    return true;
+                return false;
+            }
+        }
+        #endregion
 
         #region others
         /// <summary>

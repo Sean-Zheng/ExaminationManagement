@@ -19,9 +19,9 @@ namespace ExaminationManagement.Models.ExcelModels
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// 密码
+        /// 入学年份
         /// </summary>
-        public string Password { get; set; }
+        public int EnrollmentYear { get; set; }
         /// <summary>
         /// 性别
         /// </summary>
@@ -34,9 +34,5 @@ namespace ExaminationManagement.Models.ExcelModels
         /// 班级
         /// </summary>
         public int ClassNumber { get; set; }
-        /// <summary>
-        /// 入学年份
-        /// </summary>
-        public int EnrollmentYear { get; set; }
     }
 }

@@ -94,21 +94,19 @@ namespace ExaminationManagement.Models
             if (sheet == null || sheet.LastRowNum == 0)
                 return false;
             IRow cells = sheet.GetRow(0);
-            if (cells.LastCellNum != 7)
+            if (cells.LastCellNum != 6)
                 return false;
             if (cells.GetCell(0).ToString() != "学号")
                 return false;
             if (cells.GetCell(1).ToString() != "姓名")
                 return false;
-            if (cells.GetCell(2).ToString() != "密码")
+            if (cells.GetCell(2).ToString() != "入学年份")
                 return false;
             if (cells.GetCell(3).ToString() != "性别")
                 return false;
             if (cells.GetCell(4).ToString() != "专业")
                 return false;
             if (cells.GetCell(5).ToString() != "班级")
-                return false;
-            if (cells.GetCell(6).ToString() != "入学年份")
                 return false;
             return true;
         }
@@ -120,17 +118,16 @@ namespace ExaminationManagement.Models
         {
             ISheet sheet = _workbook.GetSheetAt(0);
             int temp;
-            for (int i = 1; i < sheet.LastRowNum; i++)
+            for (int i = 1; i <= sheet.LastRowNum; i++)
             {
                 IRow cells = sheet.GetRow(i);
                 Information information = new Information
                 {
                     StudentId = cells.GetCell(0).ToString() ?? "",
                     Name = cells.GetCell(1).ToString() ?? "",
-                    Password = cells.GetCell(2).ToString() ?? "",
+                    EnrollmentYear = int.TryParse(cells.GetCell(2).ToString(), out temp) ? temp : 0,
                     Major = cells.GetCell(4).ToString() ?? "",
                     ClassNumber = int.TryParse(cells.GetCell(5).ToString(), out temp) ? temp : 0,
-                    EnrollmentYear = int.TryParse(cells.GetCell(6).ToString(), out temp) ? temp : 0
                 };
                 if (cells.GetCell(3).ToString() == "男")
                     information.Sex = Gender.Male;

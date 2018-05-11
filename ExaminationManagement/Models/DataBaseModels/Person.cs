@@ -15,6 +15,10 @@ namespace ExaminationManagement.Models.DataBaseModels
         /// </summary>
         public string Name { get; set; }
         /// <summary>
+        /// 性别
+        /// </summary>
+        public Gender Sex { get; set; }
+        /// <summary>
         /// 生日
         /// </summary>
         public string Birth { get; set; }

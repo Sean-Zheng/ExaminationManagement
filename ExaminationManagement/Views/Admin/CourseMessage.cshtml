@@ -9,6 +9,24 @@
     @Scripts.Render("~/Scripts/bootstrap-table")
     <script>
         $(document).ready(function () {
+            var tea;
+            var years;
+            $.ajax({
+                url: '/Admin/TeacherList',
+                type: 'get',
+                async: false,
+                success: function (result) {
+                    tea = result;
+                }
+            });
+            $.ajax({
+                url: '/Admin/GetStudentYears',
+                type: 'get',
+                async: false,
+                success: function (result) {
+                    years = result;
+                }
+            });
             $('#tb_course').bootstrapTable({
                 sortName: 'Name',
                 pagination: true,
@@ -18,7 +36,14 @@
                 showColumns: true,
                 clickToSelect: true,
                 showPaginationSwitch: true,
+                onRefresh: function () {
+                    location.reload();
+                },
                 columns: [
+                    {
+                        field: 'courseId',
+                        visible: false
+                    },
                     {
                         field: 'name',
                         sortable: true,
@@ -36,7 +61,11 @@
                             type: 'number',
                             min: 0,
                             step:0.5,
-                            value: 3
+                            value: 3,
+                            validate: function (v) {
+                                if (v == '')
+                                    return '输入不能为空';
+                            }
                         }
                     },
                     {
@@ -44,11 +73,8 @@
                         sortable: true,
                         editable: {
                             type: 'select',
-                            title:'选择年级',
-                            source: [{
-                                value: 1,
-                                text:'text'
-                            }]
+                            title: '选择年级',
+                            source: years
                         }
                     },
                     {
@@ -57,13 +83,23 @@
                         editable: {
                             type: 'select',
                             title: '选择教师',
-                            source: [{
-                                value: 1,
-                                text: 'text'
-                            }]
+                            source: tea
                         }
                     },{}
-                ]
+                ],
+                onEditableSave: function (field, row, oldValue, $el) {
+                    $.ajax({
+                        url: '/Admin/EditCourse',
+                        data: {
+                            CourseId: row.courseId,
+                            CourseName: row.name,
+                            Credit: row.credit,
+                            Grade: row.grade,
+                            Teacher: row.teacher
+                        },
+                        type: 'get'
+                    });
+                }
             });
         });
     </script>
@@ -72,6 +108,7 @@
 <table id="tb_course">
     <thead>
         <tr>
+            <th>课程ID</th>
             <th>课程名称</th>
             <th>学分</th>
             <th>年级</th>
@@ -83,6 +120,7 @@
         @foreach (var item in Model)
         {
             <tr>
+                <td>@Html.DisplayFor(modelItem => item.CourseId)</td>
                 <td>@Html.DisplayFor(modelItem => item.CourseName)</td>
                 <td>@Html.DisplayFor(modelItem => item.Credit)</td>
                 <td>@Html.DisplayFor(modelItem => item.Grade)</td>

@@ -25,9 +25,12 @@
     </style>
     <script>
         $(document).ready(function () {
+            var select = selectValue();
             $('.del').click(del);
             $('.reset').click(reset);
-            $('#addTerm').click(addOne);
+            $('#addTerm').click(function () {
+                addOne(select);
+            });
             $('#addTerm').click();
             $('#clear').click(function () {
                 $('#forms').empty();
@@ -42,21 +45,21 @@
                     teacher.Tea_id = puts.first().val();
                     teacher.TeaName = puts.eq(1).val();
                     teacher.Passwd = puts.last().val();
+                    teacher.MajorId = $(this).find('select').val();
                     teachers.push(teacher);
                 });
-                console.log(teachers);
-                //$.ajax({
-                //    type: 'post',
-                //    data: {
-                //        courses: courses
-                //    },
-                //    success: function (result) {
-                //        if (result == 'success')
-                //            location.href = '/Admin/Message';
-                //        else
-                //            alert('提交失败');
-                //    }
-                //});
+                $.ajax({
+                    type: 'post',
+                    data: {
+                        teachers: teachers
+                    },
+                    success: function (result) {
+                        if (result == 'success')
+                            location.href = '/Admin/TeacherMessage';
+                        else
+                            alert('提交失败');
+                    }
+                });
             });
         });
         function del() {
@@ -80,15 +83,24 @@
             return flag;
         }
         function selectValue() {
-            var selectHtml = '<select class="form-control">' +
-                '<option>1</option>' +
-                '<option>2</option>' +
-                '<option>3</option>' +
-                '</select >';
+            var selectHtml = '<select class="form-control">';
+            $.ajax({
+                url: '/Admin/MajorList',
+                type: 'get',
+                async: false,
+                success: function (result) {
+                    $.each(result, function (index, item) {
+                        var options = '<option value="' + item.value + '">';
+                        options += item.text;
+                        options += '</option>';
+                        selectHtml += options;
+                    });
+                }
+            });
+            selectHtml += '</select>';
             return selectHtml;
         }
-        function addOne() {
-            var select = selectValue();
+        function addOne(select) {
             var text = '<form class="form-inline">' +
                 '<div class="form-group">' +
                 '<label for="tea_id">教职工号</label>' +

@@ -1,0 +1,92 @@
+﻿@model IEnumerable<ExaminationManagement.Models.DataBaseModels.TeachInfo>
+
+@{
+    ViewBag.Title = "TeacherMessage";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@section head{
+    @Styles.Render("~/Content/bootstrap-table")
+    @Scripts.Render("~/Scripts/bootstrap-table")
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '/Admin/MajorList',
+                type: 'get',
+                success: function (result) {
+                    $('#tb_teacher').bootstrapTable({
+                        sortName: 'MajorId',
+                        striped: true,
+                        search: true,
+                        columns: [
+                            {
+                                field: 'TeaId',
+                                editable: {
+                                    type: 'text'
+                                }
+                            },
+                            {
+                                field: 'TeaName',
+                                sortable: true,
+                                editable: {
+                                    type: 'text'
+                                }
+                            }, {
+                                field: 'Major',
+                                editable: {
+                                    type: 'select',
+                                    source: result
+                                }
+                            }
+                        ],
+                        onEditableSave: function (field, row, oldValue, $el) {
+                            var teacher = {};
+                            var oldTeaId;
+                            if (field == 'TeaId') {
+                                oldTeaId = oldValue;
+                                teacher.Tea_id = row.TeaId;
+                                teacher.TeaName = row.TeaName;
+                                teacher.MajorId = row.Major;
+                            }
+                            else {
+                                oldTeaId = row.TeaId;
+                                teacher.Tea_id = row.TeaId;
+                                teacher.TeaName = row.TeaName;
+                                teacher.MajorId = row.Major;
+                            }
+                            $.ajax({
+                                url: '/Admin/EditTeacher',
+                                data: {
+                                    oldTeaId: oldTeaId,
+                                    teacher: teacher
+                                },
+                                type: 'post'
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+<table id="tb_teacher">
+    <thead>
+        <tr>
+            <th>教职工号</th>
+            <th>姓名</th>
+            <th>专业</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Tea_id)</td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Major_id)</td>
+                <td>@Html.ActionLink("删除", "DeleteTeacher", new { id=item.Tea_id },new { @class = "btn btn-link" })</td>
+            </tr>
+        }
+    </tbody>
+</table>

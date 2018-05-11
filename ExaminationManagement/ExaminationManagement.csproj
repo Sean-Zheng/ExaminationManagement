@@ -226,18 +226,21 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\DataBaseModels\Course.cs" />
-    <Compile Include="Models\DataBaseModels\Major.cs" />
     <Compile Include="Models\ExcelModels\Achievement.cs" />
     <Compile Include="Models\ExcelManager.cs" />
-    <Compile Include="Models\ExcelModels\Gender.cs" />
+    <Compile Include="Models\Gender.cs" />
     <Compile Include="Models\ExcelModels\Information.cs" />
     <Compile Include="Models\DataBaseModels\Person.cs" />
     <Compile Include="Models\DataBaseModels\RoleType.cs" />
+    <Compile Include="Models\DataBaseModels\Major.cs" />
+    <Compile Include="Models\SelectOptions.cs" />
     <Compile Include="Models\SQLManager.cs" />
     <Compile Include="Models\DataBaseModels\StuInfo.cs" />
     <Compile Include="Models\DataBaseModels\TeachInfo.cs" />
     <Compile Include="Models\DataBaseModels\User.cs" />
     <Compile Include="Models\WebModels\Course.cs" />
+    <Compile Include="Models\WebModels\Major.cs" />
+    <Compile Include="Models\WebModels\Student.cs" />
     <Compile Include="Models\WebModels\Teacher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -257,12 +260,14 @@
     <Content Include="Views\Admin\Course.cshtml" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
-    <Content Include="Views\Admin\Message.cshtml" />
+    <Content Include="Views\Admin\CourseMessage.cshtml" />
     <Content Include="Views\Shared\_TeacherLayout.cshtml" />
     <Content Include="Views\Teacher\Index.cshtml" />
     <Content Include="Views\Admin\Teacher.cshtml" />
     <Content Include="Views\Admin\Major.cshtml" />
     <Content Include="Views\Admin\MajorMessage.cshtml" />
+    <Content Include="Views\Admin\TeacherMessage.cshtml" />
+    <Content Include="Views\Admin\StudentMessage.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

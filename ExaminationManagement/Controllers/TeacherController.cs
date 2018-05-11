@@ -7,21 +7,27 @@ using ExaminationManagement.Models;
 
 namespace ExaminationManagement.Controllers
 {
-    [Authorize(Roles = "Teacher,Admin")]
+    [Authorize(Roles = "Teacher")]
     public class TeacherController : Controller
     {
-        [Authorize(Roles = "Teacher")]
+        [TeacherName]
         public ActionResult Index()
         {
             return View();
         }
+        public ActionResult Student()
+        {
+            return View();
+        }
+
+
+        #region 
         /// <summary>
         /// 上传学生成绩
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize(Roles = "Teacher")]
         public ActionResult UploadAchievement(HttpPostedFileBase file)
         {
             string fileName = HttpContext.Server.MapPath("~/Resources/Temp")
@@ -33,35 +39,28 @@ namespace ExaminationManagement.Controllers
             return null;
         }
         /// <summary>
-        /// 上传学生信息
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Authorize(Roles = "Teacher,Admin")]
-        public ActionResult UploadInformation(HttpPostedFileBase file)
-        {
-            return null;
-        }
-        /// <summary>
         /// 下载学生成绩模板
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "Teacher,Admin")]
         public ActionResult DownLoadAchievement()
         {
             string fileName = HttpContext.Server.MapPath("~/Resources/Templates/学生成绩模板.xlsx");
             return File(fileName, MimeMapping.GetMimeMapping(fileName), "学生成绩模板.xlsx");
         }
-        /// <summary>
-        /// 下载学生信息模板
-        /// </summary>
-        /// <returns></returns>
-        [Authorize(Roles = "Teacher,Admin")]
-        public ActionResult DownLoadInformation()
+        #endregion
+    }
+
+    /// <summary>
+    /// 教师姓名过滤器
+    /// </summary>
+    public class TeacherNameAttribute : FilterAttribute, IActionFilter
+    {
+        public void OnActionExecuted(ActionExecutedContext filterContext) { }
+
+        public void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            string fileName = HttpContext.Server.MapPath("~/Resources/Templates/学生信息模板.xlsx");
-            return File(fileName, MimeMapping.GetMimeMapping(fileName), "学生信息模板.xlsx");
+            SQLManager manager = new SQLManager();
+            filterContext.Controller.ViewBag.userName = manager.SelectTeacherName(filterContext.HttpContext.User.Identity.Name);
         }
     }
 }

@@ -26,5 +26,9 @@ namespace ExaminationManagement.Models.DataBaseModels
         /// 学分要求
         /// </summary>
         public double Credit_need { get; set; }
+        /// <summary>
+        /// 班级
+        /// </summary>
+        public int ClassNumer { get; set; }
     }
 }
