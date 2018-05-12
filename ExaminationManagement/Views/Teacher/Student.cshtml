@@ -1,0 +1,81 @@
+﻿@model IEnumerable<ExaminationManagement.Models.DataBaseModels.StuInfo>
+
+@{
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+@section head{
+    @Styles.Render("~/Content/bootstrap-table-noedit")
+    @Scripts.Render("~/Scripts/bootstrap-table-noedit")
+    <script>
+        $(document).ready(function () {
+            var majorData = {};
+            $.ajax({
+                url: '/Teacher/MajorList',
+                type: 'get',
+                async: false,
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        majorData[item.value] = item.text;
+                    });
+                }
+            });
+            $('#tb_stu').bootstrapTable({
+                striped: true,
+                sortName: 'stu_id',
+                pagination: true,
+                search: true,
+                showToggle: true,
+                showColumns: true,
+                columns: [
+                    {
+                        field: 'stu_id',
+                        sortable: true
+                    },
+                    {
+                        field: 'stu_name',
+                        sortable: true
+                    },
+                    {
+                        field: 'stu_major',
+                        sortable: true,
+                        formatter: function (value) {
+                            return majorData[value];
+                        }
+                    },
+                    {
+                        field: 'stu_encorll',
+                        sortable: true
+                    },
+                    {
+                        field: 'stu_class',
+                        sortable: true
+                    }
+                ]
+            });
+        })
+    </script>
+}
+
+<table id="tb_stu">
+    <thead>
+        <tr>
+            <th>学号</th>
+            <th>姓名</th>
+            <th>专业</th>
+            <th>入学年份</th>
+            <th>班级</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Stu_id)</td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Major_id)</td>
+                <td>@Html.DisplayFor(modelItem => item.Enroll_year)</td>
+                <td>@Html.DisplayFor(modelItem => item.ClassNumer)</td>
+            </tr>
+        }
+    </tbody>
+</table>

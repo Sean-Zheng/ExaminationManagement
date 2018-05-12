@@ -1,0 +1,99 @@
+﻿@model IEnumerable<ExaminationManagement.Models.DataBaseModels.GradeForStudent>
+
+@{
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+@section head{
+    @Styles.Render("~/Content/bootstrap-table-noedit")
+    @Scripts.Render("~/Scripts/bootstrap-table-noedit")
+    <style>
+    </style>
+    <script>
+        $(document).ready(function () {
+            var courseData = {};
+            $.ajax({
+                url: '/Student/CourseList',
+                type: 'get',
+                async: false,
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        courseData[item.CourseId] = item.CourseName;
+                    });
+                }
+            });
+            console.log(courseData)
+
+            $('#tb_course').bootstrapTable({
+                sortName: 'course',
+                pagination: true,
+                striped: true,
+                search: true,
+                showRefresh: true,
+                showColumns: true,
+                showPaginationSwitch: true,
+                onRefresh: function () {
+                    location.reload();
+                },
+                columns: [
+                    {
+                        field: 'course',
+                        sortable: true,
+                        formatter: function (value) {
+                            return courseData[value];
+                        }
+                    },
+                    {
+                        field: 'term',
+                        sortable: true
+                    },
+                    {
+                        field: 'status',
+                        sortable: true,
+                        formatter: function (value) {
+                            if (value == 1)
+                                return '首修';
+                            else
+                                return '重修';
+                        }
+                    },
+                    {
+                        field: 'teacher',
+                        sortable: true
+                    },
+                    {
+                        field: 'grade',
+                        sortable: true,
+                        formatter: function (value) {
+                            if (value == '')
+                                return '未录入';
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
+}
+
+<table id="tb_course">
+    <thead>
+        <tr>
+            <th>课程</th>
+            <th>学期</th>
+            <th>首修/重修</th>
+            <th>教师</th>
+            <th>成绩</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.CourseId)</td>
+                <td>@Html.DisplayFor(modelItem => item.Term)</td>
+                <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                <td>@Html.DisplayFor(modelItem => item.TeacherName)</td>
+                <td>@Html.DisplayFor(modelItem => item.TotalRemark)</td>
+            </tr>
+        }
+    </tbody>
+</table>

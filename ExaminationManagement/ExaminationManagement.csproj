@@ -226,6 +226,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\DataBaseModels\Course.cs" />
+    <Compile Include="Models\DataBaseModels\Grade.cs" />
     <Compile Include="Models\ExcelModels\Achievement.cs" />
     <Compile Include="Models\ExcelManager.cs" />
     <Compile Include="Models\Gender.cs" />
@@ -239,6 +240,7 @@
     <Compile Include="Models\DataBaseModels\TeachInfo.cs" />
     <Compile Include="Models\DataBaseModels\User.cs" />
     <Compile Include="Models\WebModels\Course.cs" />
+    <Compile Include="Models\WebModels\Grade.cs" />
     <Compile Include="Models\WebModels\Major.cs" />
     <Compile Include="Models\WebModels\Student.cs" />
     <Compile Include="Models\WebModels\Teacher.cs" />
@@ -268,6 +270,10 @@
     <Content Include="Views\Admin\MajorMessage.cshtml" />
     <Content Include="Views\Admin\TeacherMessage.cshtml" />
     <Content Include="Views\Admin\StudentMessage.cshtml" />
+    <Content Include="Views\Teacher\Student.cshtml" />
+    <Content Include="Views\Teacher\Grade.cshtml" />
+    <Content Include="Views\Shared\_StudentLayout.cshtml" />
+    <Content Include="Views\Student\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -279,7 +285,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Resources\Temp\" />
     <Folder Include="Views\Analysis\" />
-    <Folder Include="Views\Student\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

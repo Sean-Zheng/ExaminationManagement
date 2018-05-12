@@ -45,19 +45,19 @@ namespace ExaminationManagement.Models
             if (sheet == null || sheet.LastRowNum == 0)
                 return false;
             IRow cells = sheet.GetRow(0);
-            if (cells.LastCellNum != 6)
+            if (cells.LastCellNum != 5)
                 return false;
-            if (cells.GetCell(0).ToString() != "课程名")
+            //if (cells.GetCell(0).ToString() != "课程名")
+            //    return false;
+            if (cells.GetCell(0).ToString() != "学生姓名")
                 return false;
-            if (cells.GetCell(1).ToString() != "学生姓名")
+            if (cells.GetCell(1).ToString() != "学号")
                 return false;
-            if (cells.GetCell(2).ToString() != "学号")
+            if (cells.GetCell(2).ToString() != "平时成绩")
                 return false;
-            if (cells.GetCell(3).ToString() != "平时成绩")
+            if (cells.GetCell(3).ToString() != "期中成绩")
                 return false;
-            if (cells.GetCell(4).ToString() != "期中成绩")
-                return false;
-            if (cells.GetCell(5).ToString() != "期末成绩")
+            if (cells.GetCell(4).ToString() != "期末成绩")
                 return false;
             return true;
         }
@@ -68,18 +68,17 @@ namespace ExaminationManagement.Models
         public IEnumerable<Achievement> GetAchievement()
         {
             ISheet sheet = _workbook.GetSheetAt(0);
-            float temp;
-            for (int i = 1; i < sheet.LastRowNum; i++)
+            double temp;
+            for (int i = 1; i <= sheet.LastRowNum; i++)
             {
                 IRow cells = sheet.GetRow(i);
                 Achievement achievement = new Achievement
-                {
-                    Curriculum = cells.GetCell(0).ToString() ?? "",
-                    Name = cells.GetCell(1).ToString() ?? "",
-                    StudentId = cells.GetCell(2).ToString() ?? "",
-                    RegularGrade = float.TryParse(cells.GetCell(3).ToString(), out temp) ? temp : 0,
-                    MidtermGrade = float.TryParse(cells.GetCell(4).ToString(), out temp) ? temp : 0,
-                    FinalExamGrade = float.TryParse(cells.GetCell(5).ToString(), out temp) ? temp : 0
+                {                    
+                    Name = cells.GetCell(0).ToString() ?? "",
+                    StudentId = cells.GetCell(1).ToString() ?? "",
+                    RegularGrade = double.TryParse(cells.GetCell(2).ToString(), out temp) ? temp : 0,
+                    MidtermGrade = double.TryParse(cells.GetCell(3).ToString(), out temp) ? temp : 0,
+                    FinalExamGrade = double.TryParse(cells.GetCell(4).ToString(), out temp) ? temp : 0
                 };
                 yield return achievement;
             }

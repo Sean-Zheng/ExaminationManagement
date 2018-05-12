@@ -1,0 +1,236 @@
+﻿@model IEnumerable<ExaminationManagement.Models.DataBaseModels.Grade>
+
+@{
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+@section head{
+    @Styles.Render("~/Content/bootstrap-table")
+    @Scripts.Render("~/Scripts/bootstrap-table")
+    <style>
+    </style>
+    <script>
+        $(document).ready(function () {
+
+            $('#file_btn').click(function () {
+                $('#file_input').click();
+            });
+            $('#file_input').change(function () {
+                $('#file_name').text($('#file_input').val());
+            });
+            $('#file_upload').click(function () {
+                var file = $('#file_input').prop('files');
+                if (file.length == 0)
+                    alert('请选择文件');
+                else {
+                    var formdata = new FormData();
+                    formdata.append('file', file[0]);
+                    formdata.append('courseId', $('#course_select').val());
+                    $.ajax({
+                        url: '/Teacher/UploadAchievement',
+                        processData: false,
+                        contentType: false,
+                        type: 'post',
+                        data: formdata,
+                        success: function (result) {
+                            if (result.exists == false)
+                                alert('文件上传失败');
+                            else if (result.legal == false)
+                                alert('文件不合法');
+                            else if (result.success == true) {
+                                location.reload();
+                            }
+                            else
+                                alert('添加失败');
+                        }
+                    });
+                }
+            });
+
+            var courseData = {};
+            $.ajax({
+                url: '/Teacher/CourseList',
+                type: 'get',
+                async: false,
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        var element = '<li><a href="/Teacher/GradeFor/' + item.value + '">' + item.text + '</a></li>';
+                        $('.dropdown-menu').append(element);
+                        $('#course_select').append('<option value="' + item.value + '">' + item.text + '</option>');
+                        courseData[item.value] = item.text;
+                    });
+                }
+            });
+            
+
+            $('#tb_course').bootstrapTable({
+                sortName: 'course_id',
+                pagination: true,
+                toolbar: '#toolbar',
+                striped: true,
+                search: true,
+                showRefresh: true,
+                showColumns: true,
+                showPaginationSwitch: true,
+                onRefresh: function () {
+                    location.reload();
+                },
+                columns: [
+                    {
+                        field: 'record',
+                        visible: false
+                    },
+                    {
+                        field: 'course_id',
+                        sortable: true,
+                        formatter: function (value) {
+                            return courseData[value];
+                        }
+                    },
+                    {
+                        field: 'stu_id',
+                        sortable: true
+                    },
+                    {
+                        field: 'stu_name',
+                        sortable: true
+                    },
+                    {
+                        field: 'term',
+                        sortable: true
+                    },
+                    {
+                        field: 'daily_work',
+                        editable: {
+                            value:'60',
+                            validate: function (v) {
+                                if (isNaN(v))
+                                    return '请输入数字';
+                                if (v == '')
+                                    return '输入不能为空';
+                            }
+                        }
+                    },
+                    {
+                        field: 'mid_exam',
+                        editable: {
+                            value: '60',
+                            validate: function (v) {
+                                if (isNaN(v))
+                                    return '请输入数字';
+                                if (v == '')
+                                    return '输入不能为空';
+                            }
+                        }
+                    },
+                    {
+                        field: 'final_exam',
+                        editable: {
+                            value: '60',
+                            validate: function (v) {
+                                if (isNaN(v))
+                                    return '请输入数字';
+                                if (v == '')
+                                    return '输入不能为空';
+                            }
+                        }
+                    },
+                    {
+                        field: 'total_remark',
+                        editable: {
+                            value: '60',
+                            validate: function (v) {
+                                if (isNaN(v))
+                                    return '请输入数字';
+                                if (v == '')
+                                    return '输入不能为空';
+                            }
+                        }
+                    },
+                    {
+                        field: 'status',
+                        sortable: true,
+                        formatter: function (value) {
+                            if (value == 1)
+                                return '首修';
+                            else
+                                return '重修';
+                        }
+                    }
+                ],
+                onEditableSave: function (field, row, oldValue, $el) {
+                    $.ajax({
+                        url: '/Teacher/EditGrade',
+                        data: {
+                            Id: row.record,
+                            DailyWork: row.daily_work,
+                            MidExam: row.mid_exam,
+                            FinalExam: row.final_exam,
+                            TotalRemark: row.total_remark
+                        },
+                        type: 'get'
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+<div style="margin:0 auto; width:320px;display:flex;justify-content:space-between;">
+    @Html.ActionLink("下载学生成绩模板", "DownLoadAchievement", null, new { @class = "btn btn-info" })
+    <button type="button" id="file_btn" class="btn btn-primary">选择学生成绩文件</button>
+</div>
+<div style="margin:10px auto;width:320px;display:flex;flex-direction:column;align-items:center;">
+    <p id="file_name">未选择任何文件</p>
+    <label for="course_select">选择课程</label>
+    <select id="course_select" class="form-control" style="margin:20px auto;">
+    </select>
+    <button type="button" id="file_upload" class="btn btn-success">上传</button>
+    <input style="display:none;" type="file" id="file_input" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+</div>
+
+<div id="toolbar" class="btn-group" role="group">
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            选择专业
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="/Teacher/Grade">所有课程</a></li>
+        </ul>
+    </div>
+</div>
+
+<table id="tb_course">
+    <thead>
+        <tr>
+            <th>记录</th>
+            <th>课程</th>
+            <th>学号</th>
+            <th>姓名</th>
+            <th>学期</th>
+            <th>平时成绩</th>
+            <th>期中成绩</th>
+            <th>期末成绩</th>
+            <th>最终成绩</th>
+            <th>修习状态</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                <td>@Html.DisplayFor(modelItem => item.CourseId)</td>
+                <td>@Html.DisplayFor(modelItem => item.StudentId)</td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Term)</td>
+                <td>@Html.DisplayFor(modelItem => item.DailyWork)</td>
+                <td>@Html.DisplayFor(modelItem => item.MidExam)</td>
+                <td>@Html.DisplayFor(modelItem => item.FinalExam)</td>
+                <td>@Html.DisplayFor(modelItem => item.TotalRemark)</td>
+                <td>@Html.DisplayFor(modelItem => item.Status)</td>
+            </tr>
+        }
+    </tbody>
+</table>

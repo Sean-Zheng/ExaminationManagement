@@ -22,6 +22,9 @@ namespace ExaminationManagement
             //bootstrap
             bundles.Add(new StyleBundle("~/Content/bootstrap").Include("~/Content/bootstrap.min.css"));
             bundles.Add(new ScriptBundle("~/Scripts/bootstrap").Include("~/Scripts/bootstrap.min.js"));
+            //bootstrap table without x-editable
+            bundles.Add(new StyleBundle("~/Content/bootstrap-table-noedit").Include("~/Content/bootstrap-table.min.css"));
+            bundles.Add(new ScriptBundle("~/Scripts/bootstrap-table-noedit").Include("~/Scripts/bootstrap-table.min.js", "~/Scripts/bootstrap-table-zh-CN.min.js"));
             //bootstrap table
             bundles.Add(new StyleBundle("~/Content/bootstrap-table").Include("~/Content/bootstrap-table.min.css", "~/Content/bootstrap3-editable/css/bootstrap-editable.css"));
             bundles.Add(new ScriptBundle("~/Scripts/bootstrap-table").Include(

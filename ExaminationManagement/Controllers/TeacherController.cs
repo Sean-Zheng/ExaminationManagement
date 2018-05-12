@@ -15,12 +15,44 @@ namespace ExaminationManagement.Controllers
         {
             return View();
         }
+        [TeacherName]
         public ActionResult Student()
         {
-            return View();
+            SQLManager manager = new SQLManager();
+            var student = manager.GetStudents(User.Identity.Name);
+            return View(student);
         }
-
-
+        [HttpGet]
+        public ActionResult MajorList()
+        {
+            SQLManager manager = new SQLManager();
+            var options = manager.GetMajors();
+            return Json(options, JsonRequestBehavior.AllowGet);
+        }
+        [TeacherName]
+        public ActionResult Grade()
+        {
+            SQLManager manager = new SQLManager();
+            var grades = manager.GetGrades(User.Identity.Name);
+            return View(grades);
+        }
+        public ActionResult GradeFor(int id)
+        {
+            SQLManager manager = new SQLManager();
+            var grades = manager.GetGrades(User.Identity.Name, id);
+            return View("Grade", grades);
+        }
+        public ActionResult EditGrade(Models.WebModels.Grade grade)
+        {
+            SQLManager manager = new SQLManager();
+            manager.UpdateGrade(grade);
+            return new EmptyResult();
+        }
+        public ActionResult CourseList()
+        {
+            SQLManager manager = new SQLManager();
+            return Json(manager.CourseList(User.Identity.Name), JsonRequestBehavior.AllowGet);
+        }
         #region 
         /// <summary>
         /// 上传学生成绩
@@ -28,15 +60,36 @@ namespace ExaminationManagement.Controllers
         /// <param name="file"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult UploadAchievement(HttpPostedFileBase file)
+        public ActionResult UploadAchievement(HttpPostedFileBase file,int courseId)
         {
-            string fileName = HttpContext.Server.MapPath("~/Resources/Temp")
-                + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") + file.FileName;
-            file.SaveAs(fileName);
+            string path = null;
+            try
+            {
+                if (file == null)
+                    return Json(new { exists = false });
+                string fileName = HttpContext.Server.MapPath("~/Resources/Temp/")
+                    + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") + System.IO.Path.GetFileName(file.FileName);
+                file.SaveAs(fileName);
+                if (!System.IO.File.Exists(fileName))
+                    return Json(new { exists = false });
+                path = fileName;
+                ExcelManager excel = new ExcelManager(fileName);
+                if (!excel.CheackAchievementTemplates())
+                    return Json(new { exists = true, legal = false });
 
-            if (System.IO.File.Exists(fileName))
-                return Json(null);
-            return null;
+                SQLManager manager = new SQLManager();
+                var grades = excel.GetAchievement();
+
+                bool flag = manager.AddGrades(grades, courseId);
+                if (flag)
+                    return Json(new { exists = true, legal = true, success = true });
+                return Json(new { exists = true, legal = true, success = false });
+            }
+            finally
+            {
+                if (path != null)
+                    System.IO.File.Delete(path);
+            }
         }
         /// <summary>
         /// 下载学生成绩模板

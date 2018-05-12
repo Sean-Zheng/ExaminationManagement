@@ -15,8 +15,22 @@ namespace ExaminationManagement.Controllers
         public ActionResult Index()
         {
             SQLManager manager = new SQLManager();
-            StuInfo stuInf = manager.GetStuInfo(User.Identity.Name);
-            return View(stuInf);
+            var grades = manager.GetStudentGrades(User.Identity.Name, 0);
+            return View(grades);
+        }
+        [StudentName]
+        public ActionResult GradeBy(int id)
+        {
+            SQLManager manager = new SQLManager();
+            var grades = manager.GetStudentGrades(User.Identity.Name, id);
+            return View("Index",grades);
+        }
+
+        public ActionResult CourseList()
+        {
+            SQLManager manager = new SQLManager();
+            IEnumerable<Course> courses = manager.GetCourses();
+            return Json(courses, JsonRequestBehavior.AllowGet);
         }
     }
 
@@ -30,7 +44,7 @@ namespace ExaminationManagement.Controllers
         public void OnActionExecuting(ActionExecutingContext filterContext)
         {
             SQLManager manager = new SQLManager();
-            filterContext.Controller.ViewBag.userName = manager.SelectTeacherName(filterContext.HttpContext.User.Identity.Name);
+            filterContext.Controller.ViewBag.userName = manager.SelectStudentName(filterContext.HttpContext.User.Identity.Name);
         }
     }
 }

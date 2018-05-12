@@ -16,6 +16,13 @@
 
     @RenderSection("head", false)
     <link href="~/Content/Shared/Layout.css" rel="stylesheet" />
+    <style>
+        #content{
+            padding:30px 100px 0;
+            margin:0 50px;
+            height:auto;
+        }
+    </style>
     <script>
         $(document).ready(function () {
             $('.noExtension').hover(
@@ -73,36 +80,6 @@
                 </li>
             </ul>
         </div>
-    </div>
-    <div id="nav">
-        <ul id="nav-menu">
-            <li class="hasSub">
-                <a href="#" class="noExtension">
-                    <span class="fa fa-line-chart menu-icon"></span>
-                    成绩分析
-                    <span class="fa fa-angle-down down"></span>
-                    <span class="tip li-tip">2</span>
-                </a>
-                <ul>
-                    <li>
-                        <a href="#">班级成绩分析</a>
-                    </li>
-                    <li>
-                        <a href="#">学生成绩分析</a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="/Teacher/Student">
-                    <span class="fa fa-commenting menu-icon"></span>学生信息
-                </a>
-            </li>
-            <li>
-                <a href="/Teacher/Grade">
-                    <span class="fa fa-commenting-o menu-icon"></span>成绩信息
-                </a>
-            </li>
-        </ul>
     </div>
     <div id="content">
         @RenderBody()

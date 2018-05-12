@@ -209,9 +209,6 @@ namespace ExaminationManagement.Models
         /// <returns></returns>
         public IEnumerable<DataBaseModels.Course> GetCourses()
         {
-            //string selectCommandText= @"select tb_course.course_id,tb_course.name,tb_course.grade,tb_course.credit,tb_teachinfo.name
-            //        from tb_course left join tb_teachinfo 
-            //        on tb_course.tea_id = tb_teachinfo.tea_id";
             SqlDataAdapter adapter = new SqlDataAdapter("select * from tb_course", _connection);
             DataTable table = new DataTable();
             adapter.Fill(table);
@@ -272,6 +269,11 @@ namespace ExaminationManagement.Models
                 return false;
             }
         }
+        /// <summary>
+        /// 更新课程信息
+        /// </summary>
+        /// <param name="course"></param>
+        /// <returns></returns>
         public bool UpdateCourse(DataBaseModels.Course course)
         {
             SqlDataAdapter adapter = new SqlDataAdapter("select * from tb_course", _connection);
@@ -289,6 +291,31 @@ namespace ExaminationManagement.Models
             row.SetField(4, course.Teacher);
 
             return adapter.Update(table) > 0 ? true : false;
+        }
+        /// <summary>
+        /// 根据教工号获取课程列表
+        /// </summary>
+        /// <param name="teaId"></param>
+        /// <returns></returns>
+        public IEnumerable<SelectOptions> CourseList(string teaId)
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "select course_id,name from tb_course where tea_id=@ID";
+                command.Parameters.AddWithValue("@ID", teaId);
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    SelectOptions options = new SelectOptions
+                    {
+                        value = reader.GetInt32(0).ToString(),
+                        text = reader.GetString(1)
+                    };
+                    yield return options;
+                }
+            }
         }
         #endregion
 
@@ -420,7 +447,7 @@ namespace ExaminationManagement.Models
         /// <param name="oldTeachId"></param>
         /// <param name="teacher"></param>
         /// <returns></returns>
-        public bool UpdateTeacher(string oldTeachId,WebModels.Teacher teacher)
+        public bool UpdateTeacher(string oldTeachId, WebModels.Teacher teacher)
         {
             bool success = this.UpdateUser(oldTeachId, teacher.Tea_id);
             using (SqlCommand command = _connection.CreateCommand())
@@ -571,42 +598,50 @@ namespace ExaminationManagement.Models
                 yield return info;
             }
         }
-        /*
+
         public IEnumerable<DataBaseModels.StuInfo> GetStudents(string teacherId)
         {
-            string selectCommandText = $"select stu_id,name,major_id,enroll_year,class_number,gender from tb_stuinfo where major_id={majorId}";
-            SqlDataAdapter adapter = new SqlDataAdapter(selectCommandText, _connection);
-            DataTable table = new DataTable();
-            adapter.Fill(table);
-
-            foreach (DataRow item in table.Rows)
+            using (SqlCommand command = _connection.CreateCommand())
             {
-                DataBaseModels.StuInfo info = new DataBaseModels.StuInfo
+                command.CommandText =
+                    @"select tb_stuinfo.stu_id,tb_stuinfo.name,tb_stuinfo.major_id,tb_stuinfo.enroll_year,tb_stuinfo.class_number,tb_stuinfo.gender from tb_stuinfo 
+                        left join tb_stu_course on tb_stuinfo.stu_id = tb_stu_course.stu_id
+                        left join tb_course on tb_stu_course.course_id = tb_course.course_id
+                        where tea_id = @ID";
+                command.Parameters.AddWithValue("@ID", teacherId);
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                DataTable table = new DataTable();
+                adapter.Fill(table);
+
+                foreach (DataRow item in table.Rows)
                 {
-                    Stu_id = item.Field<string>(0),
-                    Name = item.Field<string>(1),
-                    Major_id = item.Field<int>(2),
-                    Enroll_year = item.Field<int>(3),
-                    ClassNumer = item.Field<int>(4)
-                };
-                Gender gender = (Gender)item.Field<int>(5);
-                switch (gender)
-                {
-                    case Gender.Unknow:
-                        break;
-                    case Gender.Male:
-                        info.Sex = Gender.Male;
-                        break;
-                    case Gender.Female:
-                        info.Sex = Gender.Female;
-                        break;
-                    default:
-                        break;
+                    DataBaseModels.StuInfo info = new DataBaseModels.StuInfo
+                    {
+                        Stu_id = item.Field<string>(0),
+                        Name = item.Field<string>(1),
+                        Major_id = item.Field<int>(2),
+                        Enroll_year = item.Field<int>(3),
+                        ClassNumer = item.Field<int>(4)
+                    };
+                    Gender gender = (Gender)item.Field<int>(5);
+                    switch (gender)
+                    {
+                        case Gender.Unknow:
+                            break;
+                        case Gender.Male:
+                            info.Sex = Gender.Male;
+                            break;
+                        case Gender.Female:
+                            info.Sex = Gender.Female;
+                            break;
+                        default:
+                            break;
+                    }
+                    yield return info;
                 }
-                yield return info;
             }
         }
-        */
+
 
         /// <summary>
         /// 更新学生信息
@@ -693,7 +728,7 @@ namespace ExaminationManagement.Models
             SqlDataAdapter stu_adapter = new SqlDataAdapter("select stu_id,name,enroll_year,gender,major_id,class_number,credit_got from tb_stuinfo", _connection);
             SqlDataAdapter major_adapter = new SqlDataAdapter("select * from tb_major", _connection);
             SqlDataAdapter user_adapter = new SqlDataAdapter("select * from tb_users", _connection);
-            
+
             DataTable tb_stu = new DataTable();
             DataTable tb_major = new DataTable();
             DataTable tb_user = new DataTable();
@@ -775,7 +810,7 @@ namespace ExaminationManagement.Models
 
         public IEnumerable<object> GetYearList()
         {
-            using (SqlCommand command=_connection.CreateCommand())
+            using (SqlCommand command = _connection.CreateCommand())
             {
                 command.CommandText = "select distinct enroll_year from tb_stuinfo";
                 if (_connection.State == ConnectionState.Closed)
@@ -790,6 +825,45 @@ namespace ExaminationManagement.Models
                 _connection.Close();
             }
         }
+        #endregion
+
+        #region  学生成绩
+
+        public IEnumerable<DataBaseModels.GradeForStudent> GetStudentGrades(string stu_id,int term)
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = @"select tb_stu_course.stu_course_id,tb_stu_course.course_id,
+                            tb_stu_course.term,tb_stu_course.total_remark,
+                            tb_stu_course.status_id,tb_teachinfo.name from tb_stu_course
+                            left join tb_course on tb_stu_course.course_id=tb_course.course_id 
+                            left join tb_teachinfo on tb_course.tea_id=tb_teachinfo.tea_id where stu_id=@ID";
+                command.Parameters.AddWithValue("@ID", stu_id);
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                DataTable table = new DataTable();
+                adapter.Fill(table);
+                DataRow[] rows;
+                if (term == 0)
+                    rows = table.Select();
+                else
+                    rows = table.Select($"term={term}");
+                foreach (var item in rows)
+                {
+                    DataBaseModels.GradeForStudent grade = new DataBaseModels.GradeForStudent
+                    {
+                        Id = item.Field<int>(0),
+                        CourseId = item.Field<int>(1),
+                        Term = item.Field<int>(2),
+                        TotalRemark = item.Field<double?>(3),
+                        Status = item.Field<int>(4),
+                        TeacherName = item.Field<string>(5)
+                    };
+                    yield return grade;
+                }
+            }
+        }
+
+
         #endregion
 
         #region 用户
@@ -810,7 +884,7 @@ namespace ExaminationManagement.Models
                 return false;
             }
         }
-        public bool UpdateUser(string oldId,string newId)
+        public bool UpdateUser(string oldId, string newId)
         {
             using (SqlCommand command = _connection.CreateCommand())
             {
@@ -824,6 +898,127 @@ namespace ExaminationManagement.Models
                 if (changeNumber > 0)
                     return true;
                 return false;
+            }
+        }
+        #endregion
+
+        #region  成绩
+
+        public IEnumerable<DataBaseModels.Grade> GetGrades(string teaId)
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = @"select tb_stu_course.stu_course_id,tb_stu_course.course_id,tb_stu_course.stu_id,tb_stuinfo.name,tb_stu_course.term,
+                        tb_stu_course.daily_work,tb_stu_course.mid_exam,tb_stu_course.final_exam,tb_stu_course.total_remark,tb_stu_course.status_id
+                        from tb_stu_course left join tb_stuinfo on tb_stu_course.stu_id=tb_stuinfo.stu_id 
+                        where course_id in (select tb_course.course_id from tb_course where tea_id=@ID)";
+                command.Parameters.AddWithValue("@ID", teaId);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                DataTable table = new DataTable();
+                adapter.Fill(table);
+
+
+                foreach (DataRow item in table.Rows)
+                {
+                    DataBaseModels.Grade grade = new DataBaseModels.Grade
+                    {
+                        Id = item.Field<int>(0),
+                        CourseId = item.Field<int>(1),
+                        StudentId = item.Field<string>(2),
+                        Name = item.Field<string>(3),
+                        Term = item.Field<int>(4),
+                        DailyWork = item.Field<double?>(5),
+                        MidExam = item.Field<double?>(6),
+                        FinalExam = item.Field<double?>(7),
+                        TotalRemark = item.Field<double?>(8),
+                        Status = item.Field<int>(9)
+                    };
+                    yield return grade;
+                }
+            }
+        }
+
+        public IEnumerable<DataBaseModels.Grade> GetGrades(string teaId,int courseId)
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = @"select tb_stu_course.stu_course_id,tb_stu_course.course_id,tb_stu_course.stu_id,tb_stuinfo.name,tb_stu_course.term,
+                        tb_stu_course.daily_work,tb_stu_course.mid_exam,tb_stu_course.final_exam,tb_stu_course.total_remark,tb_stu_course.status_id
+                        from tb_stu_course left join tb_stuinfo on tb_stu_course.stu_id=tb_stuinfo.stu_id 
+                        where course_id in (select tb_course.course_id from tb_course where tea_id=@ID)";
+                command.Parameters.AddWithValue("@ID", teaId);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                DataTable table = new DataTable();
+                adapter.Fill(table);
+
+                DataRow[] rows = table.Select($"course_id={courseId}");
+
+                foreach (DataRow item in rows)
+                {
+                    DataBaseModels.Grade grade = new DataBaseModels.Grade
+                    {
+                        Id = item.Field<int>(0),
+                        CourseId = item.Field<int>(1),
+                        StudentId = item.Field<string>(2),
+                        Name = item.Field<string>(3),
+                        Term = item.Field<int>(4),
+                        DailyWork = item.Field<double?>(5),
+                        MidExam = item.Field<double?>(6),
+                        FinalExam = item.Field<double?>(7),
+                        TotalRemark = item.Field<double?>(8),
+                        Status = item.Field<int>(9)
+                    };
+                    yield return grade;
+                }
+            }
+        }
+
+        public void UpdateGrade(WebModels.Grade grade)
+        {
+            SqlDataAdapter adapter = new SqlDataAdapter("select stu_course_id,daily_work,mid_exam,final_exam,total_remark from tb_stu_course", _connection);
+            DataTable table = new DataTable();
+            adapter.Fill(table);
+
+            new SqlCommandBuilder(adapter);
+
+            DataRow row = table.Select($"stu_course_id={grade.Id}")[0];
+
+            if (grade.DailyWork != null)
+                row[1] = grade.DailyWork;
+            if (grade.MidExam != null)
+                row[2] = grade.MidExam;
+            if (grade.FinalExam != null)
+                row[3] = grade.FinalExam;
+            if (grade.TotalRemark != null)
+                row[4] = grade.TotalRemark;
+
+            adapter.Update(table);
+        }
+
+        public bool AddGrades(IEnumerable<Achievement> achievements,int courseID)
+        {
+            using (SqlCommand command=_connection.CreateCommand())
+            {
+                command.CommandText = "select stu_id,daily_work,mid_exam,final_exam,total_remark,stu_course_id from tb_stu_course where course_id=@courseID";
+                command.Parameters.AddWithValue("@courseID", courseID);
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                DataTable table = new DataTable();
+                adapter.Fill(table);
+
+                foreach (var item in achievements)
+                {
+                    DataRow[] rows = table.Select($"stu_id='{item.StudentId}'");
+                    if (rows.Length == 0)
+                        continue;
+                    DataRow row = rows[0];
+                    row[1] = item.RegularGrade;
+                    row[2] = item.MidtermGrade;
+                    row[3] = item.FinalExamGrade;
+                }
+                new SqlCommandBuilder(adapter);
+                return adapter.Update(table) > 0 ? true : false;
             }
         }
         #endregion

@@ -188,7 +188,7 @@ namespace ExaminationManagement.Controllers
                 if (file == null)
                     return Json(new { exists = false });
                 string fileName = HttpContext.Server.MapPath("~/Resources/Temp/")
-                    + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") + file.FileName;
+                    + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") + System.IO.Path.GetFileName(file.FileName);
                 file.SaveAs(fileName);
                 if (!System.IO.File.Exists(fileName))
                     return Json(new { exists = false });
