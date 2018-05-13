@@ -1157,7 +1157,16 @@ namespace ExaminationManagement.Models
                 command.Parameters.AddWithValue("@oldpwd", oldpwd);
                 command.Parameters.AddWithValue("@userId", userId);
 
-                return command.ExecuteNonQuery() > 0 ? true : false;
+                _connection.Open();
+
+                try
+                {
+                    return command.ExecuteNonQuery() > 0 ? true : false;
+                }
+                finally
+                {
+                    _connection.Close();
+                }
 
             }
         }

@@ -285,6 +285,7 @@
     <Content Include="Views\Admin\ChartView.cshtml" />
     <Content Include="Views\Admin\ChartTeacher.cshtml" />
     <Content Include="Views\Admin\ChartClass.cshtml" />
+    <Content Include="Views\Account\Changepwd.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

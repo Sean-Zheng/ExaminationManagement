@@ -38,6 +38,9 @@
                 $(this).children('.down').addClass('fa-angle-up');
                 $(this).next('ul').slideToggle();
             });
+            $('#change').click(function () {
+                $('#change_box').fadeIn();
+            })
         });
     </script>
 </head>
@@ -60,12 +63,12 @@
                         <span class="fa fa-envelope-o personal-logo"></span>
                     </a>
                     <span class="tip head-tip">4</span>
-                </li>
+                </li>*@
                 <li>
-                    <a href="">
+                    <a href="#" id="change">
                         <span class="fa fa-gear personal-logo"></span>
                     </a>
-                </li>*@
+                </li>
                 <li>
                     <a href="/Account/SignOut">
                         <span class="fa fa-sign-out personal-logo"></span>
@@ -135,6 +138,9 @@
     <div id="content">
         @RenderBody()
     </div>
+    
+    @Html.Action("Changepwd", "Account")
+
 </body>
 
 </html>

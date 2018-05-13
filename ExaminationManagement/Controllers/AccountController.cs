@@ -67,6 +67,7 @@ namespace ExaminationManagement.Controllers
         /// <param name="newpwd"></param>
         /// <returns></returns>
         [Authorize]
+        [HttpPost]
         public ActionResult ChangePassword(string oldpwd,string newpwd)
         {
             SQLManager manager = new SQLManager();
@@ -74,6 +75,11 @@ namespace ExaminationManagement.Controllers
             if (flag)
                 return Content("success");
             return Content("failure");
+        }
+
+        public ActionResult Changepwd()
+        {
+            return PartialView();
         }
 
         /// <summary>

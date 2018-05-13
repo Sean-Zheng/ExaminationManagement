@@ -18,10 +18,10 @@
     @RenderSection("head", false)
     <link href="~/Content/Shared/Layout.css" rel="stylesheet" />
     <style>
-        #content{
-            padding:30px 100px 0;
-            margin:0 50px;
-            height:auto;
+        #content {
+            padding: 30px 100px 0;
+            margin: 0 50px;
+            height: auto;
         }
     </style>
     <script>
@@ -49,6 +49,9 @@
             $('#personal_message').click(function () {
                 location.href = '/Student/Personal';
             });
+            $('#change').click(function () {
+                $('#change_box').fadeIn();
+            })
         });
     </script>
 </head>
@@ -67,16 +70,16 @@
             </div>
             <ul>
                 @*<li>
-                    <a href="">
-                        <span class="fa fa-envelope-o personal-logo"></span>
-                    </a>
-                    <span class="tip head-tip">4</span>
-                </li>
+                        <a href="">
+                            <span class="fa fa-envelope-o personal-logo"></span>
+                        </a>
+                        <span class="tip head-tip">4</span>
+                    </li>*@
                 <li>
-                    <a href="">
+                    <a href="#" id="change">
                         <span class="fa fa-gear personal-logo"></span>
                     </a>
-                </li>*@
+                </li>
                 <li>
                     <a href="/Account/SignOut">
                         <span class="fa fa-sign-out personal-logo"></span>
@@ -88,5 +91,7 @@
     <div id="content">
         @RenderBody()
     </div>
+
+    @Html.Action("Changepwd", "Account")
 </body>
 </html>
