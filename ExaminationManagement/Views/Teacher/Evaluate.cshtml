@@ -1,0 +1,31 @@
+﻿@model IEnumerable<ExaminationManagement.Models.SelectOptions>
+
+@{
+    ViewBag.Title = "Evaluate";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<h2>Evaluate</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            课程
+        </th>
+        <th>
+            评价
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.value)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.text)
+        </td>
+    </tr>
+}
+
+</table>

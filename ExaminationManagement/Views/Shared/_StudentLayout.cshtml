@@ -14,6 +14,7 @@
     @Styles.Render("~/Content/bootstrap")
     @Scripts.Render("~/Scripts/bootstrap")
 
+
     @RenderSection("head", false)
     <link href="~/Content/Shared/Layout.css" rel="stylesheet" />
     <style>
@@ -45,6 +46,9 @@
                 $(this).children('.down').addClass('fa-angle-up');
                 $(this).next('ul').slideToggle();
             });
+            $('#personal_message').click(function () {
+                location.href = '/Student/Personal';
+            });
         });
     </script>
 </head>
@@ -57,12 +61,12 @@
             <span class="logo-text" style="color: rgb(255,255,255);">Management</span>
         </div>
         <div id="personal">
-            <div>
+            <div id="personal_message">
                 <img class="header-img" src="~/Resources/Icons/photo.jpg" alt="photo" />
                 <span id="username">@ViewBag.userName</span>
             </div>
             <ul>
-                <li>
+                @*<li>
                     <a href="">
                         <span class="fa fa-envelope-o personal-logo"></span>
                     </a>
@@ -72,7 +76,7 @@
                     <a href="">
                         <span class="fa fa-gear personal-logo"></span>
                     </a>
-                </li>
+                </li>*@
                 <li>
                     <a href="/Account/SignOut">
                         <span class="fa fa-sign-out personal-logo"></span>
@@ -85,5 +89,4 @@
         @RenderBody()
     </div>
 </body>
-
 </html>

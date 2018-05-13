@@ -27,6 +27,118 @@ namespace ExaminationManagement.Models
             this._connection = new SqlConnection(connectionString);
         }
 
+        #region 成绩分析
+        public IEnumerable<AnalysisModel> Course(int id)
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = @"select tb_stu_course.course_id,tb_course.name,tb_stu_course.total_remark 
+                        from tb_stu_course left join tb_course on tb_stu_course.course_id=tb_course.course_id 
+                        where tb_stu_course.course_id=@ID";
+                command.Parameters.AddWithValue("@ID", id);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                DataTable table = new DataTable();
+                adapter.Fill(table);
+
+                foreach (DataRow item in table.Rows)
+                {
+                    AnalysisModel model = new AnalysisModel
+                    {
+                        ID = item.Field<int>(0),
+                        Name = item.Field<string>(1),
+                        Score = item.Field<double?>(2) ?? 0
+                    };
+                    yield return model;
+                }
+            }
+        }
+        public IEnumerable<AnalysisModel> Class(int c,int m,int e)
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = @"select tb_stu_course.course_id,tb_course.name,tb_stu_course.total_remark from tb_stu_course 
+                    left join tb_stuinfo on tb_stu_course.stu_id=tb_stuinfo.stu_id 
+                    left join tb_course on tb_stu_course.course_id=tb_course.course_id
+                    where tb_stuinfo.class_number=@C and tb_stuinfo.major_id=@M and tb_stuinfo.enroll_year=@E order by course_id";
+                command.Parameters.AddWithValue("@C", c);
+                command.Parameters.AddWithValue("@M", m);
+                command.Parameters.AddWithValue("@E", e);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                DataTable table = new DataTable();
+                adapter.Fill(table);
+
+                foreach (DataRow item in table.Rows)
+                {
+                    AnalysisModel model = new AnalysisModel
+                    {
+                        ID = item.Field<int>(0),
+                        Name = item.Field<string>(1),
+                        Score = item.Field<double?>(2) ?? 0
+                    };
+                    yield return model;
+                }
+            }
+        }
+        public IEnumerable<AnalysisModel> Teacher(string id)
+        {
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = @"select tb_stu_course.course_id,tb_course.name,total_remark from tb_stu_course 
+                        left join tb_course on tb_stu_course.course_id=tb_course.course_id
+                        where tb_course.tea_id=@ID order by course_id";
+                command.Parameters.AddWithValue("@ID", id);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                DataTable table = new DataTable();
+                adapter.Fill(table);
+
+                foreach (DataRow item in table.Rows)
+                {
+                    AnalysisModel model = new AnalysisModel
+                    {
+                        ID = item.Field<int>(0),
+                        Name = item.Field<string>(1),
+                        Score = item.Field<double?>(2) ?? 0
+                    };
+                    yield return model;
+                }
+            }
+        }
+
+
+        #endregion
+
+
+        public IEnumerable<ClassModel> GetClass()
+        {
+            using (SqlCommand command=_connection.CreateCommand())
+            {
+                command.CommandText = @"select distinct tb_stuinfo.major_id,tb_major.name,tb_stuinfo.enroll_year,tb_stuinfo.class_number from tb_stuinfo left join tb_major on tb_stuinfo.major_id=tb_major.major_id";
+                try
+                {
+                    _connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        ClassModel model = new ClassModel
+                        {
+                            MajorId = reader.GetInt32(0),
+                            MajorName = reader.GetString(1),
+                            Year = reader.GetInt32(2),
+                            ClassNumber = reader.GetInt32(3)
+                        };
+                        yield return model;
+                    }
+                }
+                finally
+                {
+                    _connection.Close();
+                }
+            }
+        }
+
         #region 登录
         /// <summary>
         /// 登录验证
@@ -320,6 +432,38 @@ namespace ExaminationManagement.Models
         #endregion
 
         #region 教师
+
+        public IEnumerable<SelectOptions> GetEvaluate(string teaId)
+        {
+            using (SqlCommand command=_connection.CreateCommand())
+            {
+                command.CommandText = @"select tb_course.name,tb_stu_course.evaluate
+                    from tb_stu_course left join tb_stuinfo on tb_stu_course.stu_id=tb_stuinfo.stu_id
+                    left join tb_course on tb_course.course_id=tb_stu_course.course_id
+                    where tb_stu_course.course_id in (select tb_course.course_id from tb_course where tea_id=@ID)";
+                command.Parameters.AddWithValue("@ID", teaId);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                DataTable table = new DataTable();
+                adapter.Fill(table);
+
+                foreach (DataRow item in table.Rows)
+                {
+                    SelectOptions options = new SelectOptions
+                    {
+                        value = item.Field<string>(0),
+                        text = item.Field<string>(1)
+                    };
+                    if (string.IsNullOrEmpty(options.text))
+                        continue;
+                    yield return options;
+                }
+                
+                
+            }
+        }
+
+
         public string SelectTeacherName(string Id)
         {
             using (SqlCommand command = _connection.CreateCommand())
@@ -468,9 +612,67 @@ namespace ExaminationManagement.Models
                 return false;
             }
         }
+
+
+        public DataBaseModels.TeachInfo GetTeaInfo(string teaId)
+        {
+            DataBaseModels.TeachInfo info = null;
+            using (SqlCommand command = _connection.CreateCommand())
+            {
+                command.CommandText = "select * from tb_teachinfo where tea_id=@ID";
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                SqlParameter parameter = new SqlParameter("@ID", teaId);
+                command.Parameters.Add(parameter);
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                DataTable table = new DataTable();
+                adapter.Fill(table);
+                if (table.Rows.Count > 0)
+                {
+                    DataRow reader = table.Rows[0];
+                    info = new DataBaseModels.TeachInfo
+                    {
+                        Tea_id = reader.Field<string>(0),
+                        Name = reader.Field<string>(1),
+                        Photo = reader.Field<string>(3),
+                        Tel = reader.Field<string>(4),
+                        Email = reader.Field<string>(5),
+                        Major_id = reader.Field<int>(6),
+                    };
+                    DateTime? time = reader.Field<DateTime?>(2);
+                    info.Birth = time.GetValueOrDefault().ToString("yyyy-MM-dd");
+                    if (time == null)
+                        info.Birth = null;
+                }
+                _connection.Close();
+                return info;
+            }
+        }
+
         #endregion
 
         #region 学生
+
+
+        public bool AddEvaluate(int stucourse,string content)
+        {
+            using (SqlCommand command=_connection.CreateCommand())
+            {
+                command.CommandText = "update tb_stu_course set evaluate=@content where stu_course_id=@ID";
+                command.Parameters.AddWithValue("@content", content);
+                command.Parameters.AddWithValue("@ID", stucourse);
+                _connection.Open();
+                try
+                {
+                    return command.ExecuteNonQuery() > 0 ? true : false;
+                }
+                finally
+                {
+                    _connection.Close();
+                }
+            }
+        }
+
         /// <summary>
         /// 获取学生姓名
         /// </summary>
@@ -489,7 +691,7 @@ namespace ExaminationManagement.Models
                 return name;
             }
         }
-        //未验证
+        
         public DataBaseModels.StuInfo GetStuInfo(string studentId)
         {
             DataBaseModels.StuInfo info = null;
@@ -500,24 +702,30 @@ namespace ExaminationManagement.Models
                     _connection.Open();
                 SqlParameter parameter = new SqlParameter("@studentId", studentId);
                 command.Parameters.Add(parameter);
-                SqlDataReader reader = command.ExecuteReader();
-                if (reader.Read())
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                DataTable table = new DataTable();
+                adapter.Fill(table);
+                if (table.Rows.Count>0)
                 {
+                    DataRow reader = table.Rows[0];
                     info = new DataBaseModels.StuInfo
                     {
-                        Stu_id = reader[0].ToString(),
-                        Name = reader[1].ToString(),
-                        Birth = reader[2].ToString(),
-                        Photo = reader[3].ToString(),
-                        Tel = reader[4].ToString(),
-                        Email = reader[5].ToString(),
-                        Major_id = reader.GetInt32(6),
-                        Enroll_year = reader.GetInt32(7),
-                        Credit_got = reader.GetDouble(8),
-                        Credit_need = reader.GetDouble(9)
+                        Stu_id = reader.Field<string>(0),
+                        Name = reader.Field<string>(1),
+                        Photo = reader.Field<string>(3),
+                        Tel = reader.Field<string>(4),
+                        Email = reader.Field<string>(5),
+                        Major_id = reader.Field<int>(6),
+                        Enroll_year = reader.Field<int>(7),
+                        Credit_got = reader.Field<double>(8),
+                        ClassNumer=reader.Field<int>(10)
+                        //Credit_need = reader.Field<double>(9)
                     };
+                    DateTime? time = reader.Field<DateTime?>(2);
+                    info.Birth = time.GetValueOrDefault().ToString("yyyy-MM-dd");
+                    if (time == null)
+                        info.Birth = null;
                 }
-                reader.Close();
                 _connection.Close();
                 return info;
             }
@@ -868,6 +1076,36 @@ namespace ExaminationManagement.Models
 
         #region 用户
 
+        public void UpdateUserInfo(DataBaseModels.Person person ,int type,string ID)
+        {
+            using (SqlCommand command=_connection.CreateCommand())
+            {
+                if (type == 2)
+                    command.CommandText = "select tel,email,birth,stu_id from tb_stuinfo where stu_id=@ID";
+                else if (type == 1)
+                    command.CommandText = "select tel,email,birth,tea_id from tb_teachinfo where tea_id=@ID";
+                else
+                    return;
+                command.Parameters.AddWithValue("@ID", ID);
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                DataTable table = new DataTable();
+                adapter.Fill(table);
+
+                DataRow row = table.Rows[0];
+                if (person.Tel != null)
+                    row[0] = person.Tel;
+                if (person.Email != null)
+                    row[1] = person.Email;
+                if (person.Birth != null)
+                    row[2] = person.Birth;
+
+                new SqlCommandBuilder(adapter);
+
+                adapter.Update(table);
+            }
+            
+        }
+
         public bool DeleteUser(string Id)
         {
             using (SqlCommand command = _connection.CreateCommand())
@@ -898,6 +1136,29 @@ namespace ExaminationManagement.Models
                 if (changeNumber > 0)
                     return true;
                 return false;
+            }
+        }
+        /// <summary>
+        /// 修改用户密码
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="oldpwd"></param>
+        /// <param name="newpwd"></param>
+        /// <returns></returns>
+        public bool ChangeUserPwd(string userId, string oldpwd,string newpwd)
+        {
+            oldpwd = Encryption(oldpwd);
+            newpwd = Encryption(newpwd);
+
+            using(SqlCommand command=_connection.CreateCommand())
+            {
+                command.CommandText = "update tb_users set passwd=@newpwd where passwd=@oldpwd and id=@userId";
+                command.Parameters.AddWithValue("@newpwd", newpwd);
+                command.Parameters.AddWithValue("@oldpwd", oldpwd);
+                command.Parameters.AddWithValue("@userId", userId);
+
+                return command.ExecuteNonQuery() > 0 ? true : false;
+
             }
         }
         #endregion

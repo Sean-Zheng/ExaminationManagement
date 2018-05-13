@@ -1,0 +1,70 @@
+﻿@model IEnumerable<ExaminationManagement.Models.SelectOptions>
+
+@{
+    ViewBag.Title = "ChartTeacher";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section head{
+    @Scripts.Render("~/Scripts/highcharts")
+
+    <script>
+        $(document).ready(function () {
+
+
+            var chart = {
+                type: 'column'
+            };
+            var title = {
+                text: ''
+            };
+            var xAxis = {
+                categories: ['最低分', '平均分', '最高分'],
+            };
+            var yAxis = {
+                min: 0,
+                title: {
+                    text: '得分'
+                },
+            };
+
+            var credits = {
+                enabled: false
+            };
+
+
+            $('#btn').click(function () {
+                $.ajax({
+                    url: '/Analysis/Teacher',
+                    type: 'get',
+                    data: {
+                        id: $('#select').val()
+                    },
+                    success: function (data) {
+                        var json = {};
+                        json.chart = chart;
+                        json.title = title;
+                        json.xAxis = xAxis;
+                        json.yAxis = yAxis;
+                        json.series = data;
+                        json.credits = credits;
+                        $('#container').highcharts(json);
+                    }
+                });
+            });
+
+        })
+    </script>
+}
+<select id="select" class="form-control" style="display:inline;width:200px;">
+    @foreach (var item in Model)
+    {
+        <option value="@item.value">@item.text</option>
+    }
+</select>
+
+<button id="btn" class="btn btn-success">确定</button>
+
+<div id="container" style="margin-top:50px;"></div>
+
+

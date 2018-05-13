@@ -193,6 +193,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\bootstrap3-editable\js\bootstrap-editable.js" />
     <Content Include="Scripts\bootstrap3-editable\js\bootstrap-editable.min.js" />
+    <Content Include="Scripts\highcharts.js" />
     <Content Include="Scripts\inputs-ext\address\address.js" />
     <Content Include="Scripts\inputs-ext\typeaheadjs\lib\typeahead.js" />
     <Content Include="Scripts\inputs-ext\typeaheadjs\typeaheadjs.js" />
@@ -225,6 +226,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AnalysisModel.cs" />
+    <Compile Include="Models\ClassModel.cs" />
     <Compile Include="Models\DataBaseModels\Course.cs" />
     <Compile Include="Models\DataBaseModels\Grade.cs" />
     <Compile Include="Models\ExcelModels\Achievement.cs" />
@@ -234,6 +237,7 @@
     <Compile Include="Models\DataBaseModels\Person.cs" />
     <Compile Include="Models\DataBaseModels\RoleType.cs" />
     <Compile Include="Models\DataBaseModels\Major.cs" />
+    <Compile Include="Models\ResultModel.cs" />
     <Compile Include="Models\SelectOptions.cs" />
     <Compile Include="Models\SQLManager.cs" />
     <Compile Include="Models\DataBaseModels\StuInfo.cs" />
@@ -274,6 +278,13 @@
     <Content Include="Views\Teacher\Grade.cshtml" />
     <Content Include="Views\Shared\_StudentLayout.cshtml" />
     <Content Include="Views\Student\Index.cshtml" />
+    <Content Include="Views\Student\Personal.cshtml" />
+    <Content Include="Views\Teacher\Personal.cshtml" />
+    <Content Include="Views\Student\Evaluate.cshtml" />
+    <Content Include="Views\Teacher\Evaluate.cshtml" />
+    <Content Include="Views\Admin\ChartView.cshtml" />
+    <Content Include="Views\Admin\ChartTeacher.cshtml" />
+    <Content Include="Views\Admin\ChartClass.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,0 +1,82 @@
+﻿@model ExaminationManagement.Models.ClassSelect
+
+@{
+    ViewBag.Title = "ChartClass";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section head{
+    @Scripts.Render("~/Scripts/highcharts")
+
+    <script>
+        $(document).ready(function () {
+
+
+            var chart = {
+                type: 'column'
+            };
+            var title = {
+                text: ''
+            };
+            var xAxis = {
+                categories: ['最低分', '平均分', '最高分'],
+            };
+            var yAxis = {
+                min: 0,
+                title: {
+                    text: '得分'
+                },
+            };
+
+            var credits = {
+                enabled: false
+            };
+
+
+            $('#btn').click(function () {
+                $.ajax({
+                    url: '/Analysis/Class',
+                    type: 'get',
+                    data: {
+                        c: $('#select_c').val(),
+                        m: $('#select_major').val(),
+                        e: $('#select_y').val()
+                    },
+                    success: function (data) {
+                        var json = {};
+                        json.chart = chart;
+                        json.title = title;
+                        json.xAxis = xAxis;
+                        json.yAxis = yAxis;
+                        json.series = data;
+                        json.credits = credits;
+                        $('#container').highcharts(json);
+                    }
+                });
+            });
+
+        })
+    </script>
+}
+<select id="select_major" class="form-control" style="display:inline;width:200px;">
+    @foreach (var item in Model.Majors)
+    {
+        <option value="@item.MajorId">@item.MajorName</option>
+    }
+</select>
+<select id="select_y" class="form-control" style="display:inline;width:200px;">
+    @foreach (var item in Model.Years)
+    {
+        <option value="@item">@item</option>
+    }
+</select>
+<select id="select_c" class="form-control" style="display:inline;width:200px;">
+    @foreach (var item in Model.Number)
+    {
+        <option value="@item">@item</option>
+    }
+</select>
+
+<button id="btn" class="btn btn-success">确定</button>
+
+<div id="container" style="margin-top:50px;"></div>

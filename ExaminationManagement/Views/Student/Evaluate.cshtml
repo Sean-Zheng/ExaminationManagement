@@ -1,0 +1,29 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+@section head{
+
+    <script>
+        $(document).ready(function () {
+            $('#btn').click(function () {
+                $.ajax({
+                    type: 'post',
+                    data: {
+                        @*id:@ViewContext.RouteData.Values["id"],*@
+                        content: $('#evalute').val()
+                    },
+                    success: function (data) {
+                        if (data == 'success')
+                            location.href='/Student/Index'
+                    }
+                });
+            });
+        })
+    </script>
+}
+
+<textarea id="evalute" class="form-control" rows="5" style="resize:none;" placeholder="请输入你对该课程的评价..."></textarea>
+
+<button id="btn" class="btn btn-success" style="float:right;margin-top:20px;">提交</button>

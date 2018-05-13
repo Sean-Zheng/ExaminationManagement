@@ -8,7 +8,7 @@ namespace ExaminationManagement.Models.DataBaseModels
     /// <summary>
     /// 人员信息
     /// </summary>
-    public abstract class Person
+    public class Person
     {
         /// <summary>
         /// 姓名

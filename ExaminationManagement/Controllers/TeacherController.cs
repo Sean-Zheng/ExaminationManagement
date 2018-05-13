@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ExaminationManagement.Models;
+using ExaminationManagement.Models.DataBaseModels;
 
 namespace ExaminationManagement.Controllers
 {
@@ -28,6 +29,28 @@ namespace ExaminationManagement.Controllers
             SQLManager manager = new SQLManager();
             var options = manager.GetMajors();
             return Json(options, JsonRequestBehavior.AllowGet);
+        }
+        [TeacherName]
+        public ActionResult Evaluate()
+        {
+            SQLManager manager = new SQLManager();
+            var s = manager.GetEvaluate(User.Identity.Name);
+            return View(s);
+        }
+        [TeacherName]
+        public ActionResult Personal()
+        {
+            SQLManager manager = new SQLManager();
+            TeachInfo info = manager.GetTeaInfo(User.Identity.Name);
+            return View(info);
+        }
+        [HttpPost]
+        [Authorize]
+        public ActionResult Change(Person person)
+        {
+            SQLManager manager = new SQLManager();
+            manager.UpdateUserInfo(person, 1, User.Identity.Name);
+            return new EmptyResult();
         }
         [TeacherName]
         public ActionResult Grade()

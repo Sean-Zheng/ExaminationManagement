@@ -19,6 +19,11 @@ namespace ExaminationManagement
             bundles.Add(new ScriptBundle("~/Scripts/Loadding").Include("~/Scripts/pace.min.js"));
             //jQuery
             bundles.Add(new ScriptBundle("~/Scripts/jQuery").Include("~/Scripts/jquery-3.3.1.min.js"));
+            //HightCharts
+            bundles.Add(new ScriptBundle("~/Scripts/highcharts").Include("~/Scripts/highcharts.js"));
+            //x-editable
+            bundles.Add(new StyleBundle("~/Content/x-editable").Include("~/Content/bootstrap3-editable/css/bootstrap-editable.css"));
+            bundles.Add(new ScriptBundle("~/Scripts/x-editable").Include("~/Scripts/bootstrap3-editable/js/bootstrap-editable.min.js"));
             //bootstrap
             bundles.Add(new StyleBundle("~/Content/bootstrap").Include("~/Content/bootstrap.min.css"));
             bundles.Add(new ScriptBundle("~/Scripts/bootstrap").Include("~/Scripts/bootstrap.min.js"));

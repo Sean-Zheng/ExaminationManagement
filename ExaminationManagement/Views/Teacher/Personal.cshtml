@@ -1,0 +1,82 @@
+﻿@model ExaminationManagement.Models.DataBaseModels.TeachInfo
+
+@{
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+@section head{
+    @Styles.Render("~/Content/bootstrap-table")
+    @Scripts.Render("~/Scripts/bootstrap-table")
+    <script>
+        $(document).ready(function () {
+            $('#tb_message').bootstrapTable({
+                striped: true,
+                columns: [
+                    {
+                        field: 'teaId'
+                    },
+                    {
+                        field: 'name'
+                    },
+                    {
+                        field: 'tel',
+                        editable: {
+                            validate: function (v) {
+                                if (isNaN(v))
+                                    return '请输入数字';
+                            }
+                        }
+                    },
+                    {
+                        field: 'email',
+                        editable: {
+                            validate: function (v) {
+                                if (v == '')
+                                    return '输入不可为空';
+                            }
+                        }
+                    },
+                    {
+                        field: 'birth',
+                        editable: {
+                            type: 'date'
+                        }
+                    }
+                ],
+                onEditableSave: function (field, row, oldValue, $el) {
+                    $.ajax({
+                        url: '/Teacher/Change',
+                        data: {
+                            Birth: row.birth,
+                            Tel: row.tel,
+                            Email: row.email
+                        },
+                        type: 'post'
+                    });
+                }
+            });
+        })
+    </script>
+}
+<div style="margin-top:220px;">
+    <table id="tb_message">
+        <thead>
+            <tr>
+                <th>教工号</th>
+                <th>姓名</th>
+                <th>电话</th>
+                <th>邮箱</th>
+                <th>生日</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Html.DisplayFor(model => model.Tea_id)</td>
+                <td>@Html.DisplayFor(model => model.Name)</td>
+                <td>@Html.DisplayFor(model => model.Tel)</td>
+                <td>@Html.DisplayFor(model => model.Email)</td>
+                <td>@Html.DisplayFor(model => model.Birth)</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

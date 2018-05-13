@@ -38,6 +38,9 @@
                 $(this).children('.down').addClass('fa-angle-up');
                 $(this).next('ul').slideToggle();
             });
+            $('#personal_message').click(function () {
+                location.href = '/Teacher/Personal';
+            });
         });
     </script>
 </head>
@@ -50,12 +53,12 @@
             <span class="logo-text" style="color: rgb(255,255,255);">Management</span>
         </div>
         <div id="personal">
-            <div>
+            <div id="personal_message">
                 <img class="header-img" src="~/Resources/Icons/photo.jpg" alt="photo" />
                 <span id="username">@ViewBag.userName</span>
             </div>
             <ul>
-                <li>
+                @*<li>
                     <a href="">
                         <span class="fa fa-envelope-o personal-logo"></span>
                     </a>
@@ -65,7 +68,7 @@
                     <a href="">
                         <span class="fa fa-gear personal-logo"></span>
                     </a>
-                </li>
+                </li>*@
                 <li>
                     <a href="/Account/SignOut">
                         <span class="fa fa-sign-out personal-logo"></span>
@@ -76,22 +79,22 @@
     </div>
     <div id="nav">
         <ul id="nav-menu">
-            <li class="hasSub">
-                <a href="#" class="noExtension">
-                    <span class="fa fa-line-chart menu-icon"></span>
-                    成绩分析
-                    <span class="fa fa-angle-down down"></span>
-                    <span class="tip li-tip">2</span>
-                </a>
-                <ul>
-                    <li>
-                        <a href="#">班级成绩分析</a>
-                    </li>
-                    <li>
-                        <a href="#">学生成绩分析</a>
-                    </li>
-                </ul>
-            </li>
+            @*<li class="hasSub">
+            <a href="#" class="noExtension">
+                <span class="fa fa-line-chart menu-icon"></span>
+                成绩分析
+                <span class="fa fa-angle-down down"></span>
+                <span class="tip li-tip">2</span>
+            </a>
+            <ul>
+                <li>
+                    <a href="#">班级成绩分析</a>
+                </li>
+                <li>
+                    <a href="#">学生成绩分析</a>
+                </li>
+            </ul>
+        </li>*@
             <li>
                 <a href="/Teacher/Student">
                     <span class="fa fa-commenting menu-icon"></span>学生信息
@@ -100,6 +103,11 @@
             <li>
                 <a href="/Teacher/Grade">
                     <span class="fa fa-commenting-o menu-icon"></span>成绩信息
+                </a>
+            </li>
+            <li>
+                <a href="/Teacher/Evaluate">
+                    <span class="fa fa-commenting-o menu-icon"></span>获取评价
                 </a>
             </li>
         </ul>

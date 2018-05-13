@@ -269,6 +269,47 @@ namespace ExaminationManagement.Controllers
             return new EmptyResult();
         }
         #endregion
+        [AdminId]
+        public ActionResult ChartView()
+        {
+            SQLManager manager = new SQLManager();
+            return View(manager.GetCourses());
+        }
+        [AdminId]
+        public ActionResult ChartClass()
+        {
+            SQLManager manager = new SQLManager();
+            var classlist = manager.GetClass();
+            List<Models.DataBaseModels.Major> majors = new List<Models.DataBaseModels.Major>();
+            List<int> yeras = new List<int>();
+            List<int> classnumer = new List<int>();
+
+            foreach (var item in classlist)
+            {
+                Models.DataBaseModels.Major major = new Models.DataBaseModels.Major
+                {
+                    MajorId = item.MajorId,
+                    MajorName = item.MajorName
+                };
+                majors.Add(major);
+                yeras.Add(item.Year);
+                classnumer.Add(item.ClassNumber);
+            }
+            ClassSelect select = new ClassSelect
+            {
+                Years = yeras.Distinct().ToArray(),
+                Number = classnumer.Distinct().ToArray()
+            };
+            select.Majors = majors.Distinct(new Models.DataBaseModels.MajorComparer()).ToArray();
+
+            return View(select);
+        }
+        [AdminId]
+        public ActionResult ChartTeacher()
+        {
+            SQLManager manager = new SQLManager();
+            return View(manager.GetTeachers());
+        }
     }
 
     /// <summary>

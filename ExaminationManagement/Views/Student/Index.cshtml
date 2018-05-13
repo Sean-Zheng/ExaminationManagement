@@ -4,10 +4,10 @@
     Layout = "~/Views/Shared/_StudentLayout.cshtml";
 }
 @section head{
-    @Styles.Render("~/Content/bootstrap-table-noedit")
-    @Scripts.Render("~/Scripts/bootstrap-table-noedit")
-    <style>
-    </style>
+
+    @Styles.Render("~/Content/bootstrap-table")
+    @Scripts.Render("~/Scripts/bootstrap-table")
+
     <script>
         $(document).ready(function () {
             var courseData = {};
@@ -21,7 +21,6 @@
                     });
                 }
             });
-            console.log(courseData)
 
             $('#tb_course').bootstrapTable({
                 sortName: 'course',
@@ -29,12 +28,15 @@
                 striped: true,
                 search: true,
                 showRefresh: true,
-                showColumns: true,
                 showPaginationSwitch: true,
                 onRefresh: function () {
                     location.reload();
                 },
                 columns: [
+                    {
+                        field: 'ID',
+                        visible: false
+                    },
                     {
                         field: 'course',
                         sortable: true,
@@ -77,23 +79,27 @@
 <table id="tb_course">
     <thead>
         <tr>
+            <th>标识符</th>
             <th>课程</th>
             <th>学期</th>
             <th>首修/重修</th>
             <th>教师</th>
             <th>成绩</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.CourseId)</td>
-                <td>@Html.DisplayFor(modelItem => item.Term)</td>
-                <td>@Html.DisplayFor(modelItem => item.Status)</td>
-                <td>@Html.DisplayFor(modelItem => item.TeacherName)</td>
-                <td>@Html.DisplayFor(modelItem => item.TotalRemark)</td>
-            </tr>
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Id)</td>
+            <td>@Html.DisplayFor(modelItem => item.CourseId)</td>
+            <td>@Html.DisplayFor(modelItem => item.Term)</td>
+            <td>@Html.DisplayFor(modelItem => item.Status)</td>
+            <td>@Html.DisplayFor(modelItem => item.TeacherName)</td>
+            <td>@Html.DisplayFor(modelItem => item.TotalRemark)</td>
+            <td>@Html.ActionLink("评价", "Evaluate", new { id = item.Id }, new { @class = "btn btn-link" })</td>
+        </tr>
         }
     </tbody>
 </table>

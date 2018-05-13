@@ -59,6 +59,23 @@ namespace ExaminationManagement.Controllers
             return RedirectToAction("Login");
 
         }
+
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="oldpwd"></param>
+        /// <param name="newpwd"></param>
+        /// <returns></returns>
+        [Authorize]
+        public ActionResult ChangePassword(string oldpwd,string newpwd)
+        {
+            SQLManager manager = new SQLManager();
+            bool flag = manager.ChangeUserPwd(User.Identity.Name, oldpwd, newpwd);
+            if (flag)
+                return Content("success");
+            return Content("failure");
+        }
+
         /// <summary>
         /// 设置Cookies
         /// </summary>

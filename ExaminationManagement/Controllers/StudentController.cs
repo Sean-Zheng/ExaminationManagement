@@ -32,6 +32,42 @@ namespace ExaminationManagement.Controllers
             IEnumerable<Course> courses = manager.GetCourses();
             return Json(courses, JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        [Authorize]
+        public ActionResult Change(Person person)
+        {
+            SQLManager manager = new SQLManager();
+            manager.UpdateUserInfo(person, 2, User.Identity.Name);
+            return new EmptyResult();
+        }
+        public ActionResult Evaluate(int id)
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Evaluate(int id,string content)
+        {
+            SQLManager manager = new SQLManager();
+            if (manager.AddEvaluate(id,content))
+                return Content("success");
+            return Content("failure");
+        }
+        //[HttpGet]
+        //public ActionResult MajorList()
+        //{
+        //    SQLManager manager = new SQLManager();
+        //    var options = manager.GetMajorList();
+        //    return Json(options, JsonRequestBehavior.AllowGet);
+        //}
+
+        [StudentName]
+        public ActionResult Personal()
+        {
+            SQLManager manager = new SQLManager();
+            StuInfo info = manager.GetStuInfo(User.Identity.Name);
+            return View(info);
+        }
+
     }
 
     /// <summary>

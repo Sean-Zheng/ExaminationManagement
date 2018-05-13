@@ -55,7 +55,7 @@
                 <span id="username">@ViewBag.userName</span>
             </div>
             <ul>
-                <li>
+                @*<li>
                     <a href="">
                         <span class="fa fa-envelope-o personal-logo"></span>
                     </a>
@@ -65,7 +65,7 @@
                     <a href="">
                         <span class="fa fa-gear personal-logo"></span>
                     </a>
-                </li>
+                </li>*@
                 <li>
                     <a href="/Account/SignOut">
                         <span class="fa fa-sign-out personal-logo"></span>
@@ -85,13 +85,13 @@
                 </a>
                 <ul>
                     <li>
-                        <a href="#">课程成绩分析</a>
+                        <a href="/Admin/ChartView">课程成绩分析</a>
                     </li>
                     <li>
-                        <a href="#">班级成绩分析</a>
+                        <a href="/Admin/ChartClass">班级成绩分析</a>
                     </li>
                     <li>
-                        <a href="#">学生成绩分析</a>
+                        <a href="/Admin/ChartTeacher">教师成绩分析</a>
                     </li>
                 </ul>
             </li>
