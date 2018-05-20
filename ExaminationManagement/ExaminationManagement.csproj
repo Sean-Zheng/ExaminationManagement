@@ -261,7 +261,7 @@
     <None Include="packages.config" />
     <Content Include="Resources\Templates\学生信息模板.xlsx" />
     <Content Include="Resources\Templates\学生成绩模板.xlsx" />
-    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\Course.cshtml" />

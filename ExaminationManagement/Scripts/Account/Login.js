@@ -22,11 +22,14 @@
                     setTimeout('window.location.href = "/Teacher/Index"', 200);
                 else if (result == 'Student')
                     setTimeout('window.location.href = "/Student/Index"', 200);
-                else
+                else {
                     loaddingDisappear();
+                    alert('S-Error');
+                }
             },
             error: function () {
                 setTimeout(loaddingDisappear, 200);
+                alert('Error');
             }
         });
     });

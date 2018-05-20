@@ -120,6 +120,7 @@ namespace ExaminationManagement.Controllers
         /// <returns></returns>
         public ActionResult DownLoadAchievement()
         {
+            
             string fileName = HttpContext.Server.MapPath("~/Resources/Templates/学生成绩模板.xlsx");
             return File(fileName, MimeMapping.GetMimeMapping(fileName), "学生成绩模板.xlsx");
         }

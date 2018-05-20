@@ -17,7 +17,7 @@ namespace ExaminationManagement.Controllers
         /// <returns></returns>
         public ActionResult Login()
         {
-            return View();
+            return View("Index");
         }
         /// <summary>
         /// 登录验证
