@@ -72,14 +72,19 @@ namespace ExaminationManagement.Models
             for (int i = 1; i <= sheet.LastRowNum; i++)
             {
                 IRow cells = sheet.GetRow(i);
-                Achievement achievement = new Achievement
-                {                    
-                    Name = cells.GetCell(0).ToString() ?? "",
-                    StudentId = cells.GetCell(1).ToString() ?? "",
-                    RegularGrade = double.TryParse(cells.GetCell(2).ToString(), out temp) ? temp : 0,
-                    MidtermGrade = double.TryParse(cells.GetCell(3).ToString(), out temp) ? temp : 0,
-                    FinalExamGrade = double.TryParse(cells.GetCell(4).ToString(), out temp) ? temp : 0
-                };
+                if (cells == null)
+                    continue;
+                Achievement achievement = new Achievement();
+                if (cells.GetCell(0) != null)
+                    achievement.Name = cells.GetCell(0).ToString() ?? "";
+                if (cells.GetCell(1) != null)
+                    achievement.StudentId = cells.GetCell(1).ToString() ?? "";
+                if (cells.GetCell(2) != null)
+                    achievement.RegularGrade = double.TryParse(cells.GetCell(2).ToString(), out temp) ? temp : 0;
+                if (cells.GetCell(3) != null)
+                    achievement.MidtermGrade = double.TryParse(cells.GetCell(3).ToString(), out temp) ? temp : 0;
+                if (cells.GetCell(4) != null)
+                    achievement.FinalExamGrade = double.TryParse(cells.GetCell(4).ToString(), out temp) ? temp : 0;
                 yield return achievement;
             }
         }
