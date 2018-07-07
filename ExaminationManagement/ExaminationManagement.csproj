@@ -178,6 +178,7 @@
     <Content Include="Scripts\bootstrap-editable\js\bootstrap-editable.js" />
     <Content Include="Scripts\bootstrap-editable\js\bootstrap-editable.min.js" />
     <Content Include="Scripts\bootstrap-table-editable.js" />
+    <Content Include="Scripts\bootstrap-table-export.min.js" />
     <Content Include="Scripts\bootstrap-table-zh-CN.min.js" />
     <Content Include="Scripts\bootstrap-table.min.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -194,6 +195,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\bootstrap3-editable\js\bootstrap-editable.js" />
     <Content Include="Scripts\bootstrap3-editable\js\bootstrap-editable.min.js" />
+    <Content Include="Scripts\FileSaver.min.js" />
     <Content Include="Scripts\highcharts.js" />
     <Content Include="Scripts\inputs-ext\address\address.js" />
     <Content Include="Scripts\inputs-ext\typeaheadjs\lib\typeahead.js" />
@@ -214,6 +216,9 @@
     <Content Include="Scripts\jqueryui-editable\js\jqueryui-editable.js" />
     <Content Include="Scripts\jqueryui-editable\js\jqueryui-editable.min.js" />
     <Content Include="Scripts\pace.min.js" />
+    <Content Include="Scripts\tableexport-2.1.min.js" />
+    <Content Include="Scripts\tableExport.min.js" />
+    <Content Include="Scripts\xlsx.core.min.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

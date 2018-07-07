@@ -7,6 +7,12 @@
 @section head{
     @Styles.Render("~/Content/bootstrap-table")
     @Scripts.Render("~/Scripts/bootstrap-table")
+
+    <script src="~/Scripts/xlsx.core.min.js"></script>
+    <script src="~/Scripts/FileSaver.min.js"></script>
+    <script src="~/Scripts/tableExport.min.js"></script>
+
+    <script src="~/Scripts/bootstrap-table-export.min.js"></script>
     <style>
     </style>
     <script>
@@ -61,7 +67,7 @@
                     });
                 }
             });
-            
+
 
             $('#tb_course').bootstrapTable({
                 sortName: 'course_id',
@@ -71,6 +77,8 @@
                 search: true,
                 showRefresh: true,
                 showColumns: true,
+                showExport: true,
+                exportTypes: ['excel'],
                 showPaginationSwitch: true,
                 onRefresh: function () {
                     location.reload();
@@ -102,7 +110,7 @@
                     {
                         field: 'daily_work',
                         editable: {
-                            value:'60',
+                            value: '60',
                             validate: function (v) {
                                 if (isNaN(v))
                                     return '请输入数字';
@@ -183,8 +191,7 @@
 <div style="margin:10px auto;width:320px;display:flex;flex-direction:column;align-items:center;">
     <p id="file_name">未选择任何文件</p>
     <label for="course_select">选择课程</label>
-    <select id="course_select" class="form-control" style="margin:20px auto;">
-    </select>
+    <select id="course_select" class="form-control" style="margin:20px auto;"></select>
     <button type="button" id="file_upload" class="btn btn-success">上传</button>
     <input style="display:none;" type="file" id="file_input" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
 </div>
